@@ -1,6 +1,6 @@
 # Roadmap
 
-### Phase 1 --- key-value read write
+### Phase 1 --- key-value memory read/write, support snapshot
 
 1. write memory
 2. read memory
@@ -9,17 +9,18 @@ methods to implement:
 
 ```
 byte[] get(byte[] key) throws DBException;
+byte[] get(byte[] key, ReadOptions options) throws DBException
 
 DBIterator iterator();
+DBIterator iterator(ReadOptions options);
 
-void put(byte[] key, byte[] value) throws DBException;
-void delete(byte[] key) throws DBException;
-void write(WriteBatch updates) throws DBException;
+Snapshot put(byte[] key, byte[] value) throws DBException;
+Snapshot delete(byte[] key) throws DBException;
+Snapshot write(WriteBatch updates) throws DBException;
 
 WriteBatch createWriteBatch();
+Snapshot getSnapshot();
 ```
-
-
 
 options to support:
 
@@ -28,9 +29,22 @@ Comparator comparator
 long writeBufferSize // byte unit
 ```
 
+ReadOptions to support:
 
+```
+snapshot
+```
 
+Limits:
 
+1. can only store limited data since memory is the only storage
+
+More details:
+
+1. attach an increasing sequence number for every record
+2. use a special typed record to represent delete operation without physical deletion
+3. base on above design design, we can support snapshot(only records whose sequence number <= sequence number user provided can be seen)
+4. use skipList data structure to hold data in memory so that data set is sorted and sequence number based snapshot can be implemented efficiently(records are key-grouped and latest record with larger sequence number comes first) 
 
 ### Phase 2 --- Snapshot Support
 
