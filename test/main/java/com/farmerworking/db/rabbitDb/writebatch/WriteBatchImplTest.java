@@ -86,16 +86,16 @@ public class WriteBatchImplTest {
     writeBatch.append(b2);
 
     assertEquals("", printContents());
-    b2.put(new Slice("a".getBytes()), new Slice("va".getBytes()));
+    b2.put(new Slice("a"), new Slice("va"));
     writeBatch.append(b2);
     assertEquals("Put(a, va)@200", printContents());
 
     b2.clear();
-    b2.put(new Slice("b".getBytes()), new Slice("vb".getBytes()));
+    b2.put(new Slice("b"), new Slice("vb"));
     writeBatch.append(b2);
     assertEquals("Put(a, va)@200" + "Put(b, vb)@201", printContents());
 
-    b2.delete(new Slice("foo".getBytes()));
+    b2.delete(new Slice("foo"));
     writeBatch.append(b2);
     assertEquals("Put(a, va)@200" +
         "Put(b, vb)@202" +
@@ -104,11 +104,11 @@ public class WriteBatchImplTest {
   }
 
   private void put(String key, String value) {
-    writeBatch.put(new Slice(key.getBytes()), new Slice(value.getBytes()));
+    writeBatch.put(new Slice(key), new Slice(value));
   }
 
   private void delete(String key) {
-    writeBatch.delete(new Slice(key.getBytes()));
+    writeBatch.delete(new Slice(key));
   }
 
   private void setSequence(Long sequence) {

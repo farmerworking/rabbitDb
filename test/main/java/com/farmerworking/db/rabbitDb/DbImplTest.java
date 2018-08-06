@@ -86,7 +86,7 @@ public class DbImplTest {
     }
 
     for (long i = 0; i < R; i++) {
-      if (state.containsKey(new Slice(String.valueOf(i).getBytes()))) {
+      if (state.containsKey(new Slice(String.valueOf(i)))) {
         assertEquals(new String(state.get(new Slice(String.valueOf(i))).getData()),
             getString(String.valueOf(i)));
       } else {
@@ -113,7 +113,7 @@ public class DbImplTest {
     // Forward iteration test
     for (long i = 0; i < R; i++) {
       DBIteratorImpl iter = db.iterator();
-      iter.seek(new Slice(String.valueOf(i).getBytes()));
+      iter.seek(new Slice(String.valueOf(i)));
 
       // Compare against model skipListIterator
       Iterator<Entry<Slice, Slice>> iterator1 = (state
@@ -287,22 +287,22 @@ public class DbImplTest {
   private String getString(String key, Snapshot snapshot) {
     Slice value;
     if (snapshot == null) {
-      value = db.get(new Slice(key.getBytes()));
+      value = db.get(new Slice(key));
     } else {
       ReadOptions options = new ReadOptions();
       options.snapshot(snapshot);
-      value = db.get(new Slice(key.getBytes()), options);
+      value = db.get(new Slice(key), options);
     }
 
     return value == null ? null : new String(value.getData());
   }
 
   private Snapshot put(String key, String value) {
-    return db.put(new Slice(key.getBytes()), new Slice(value.getBytes()));
+    return db.put(new Slice(key), new Slice(value));
   }
 
   private Snapshot delete(String key) {
-    return db.delete(new Slice(key.getBytes()));
+    return db.delete(new Slice(key));
   }
 
   private DBIteratorImpl iterator(Snapshot snapshot) {

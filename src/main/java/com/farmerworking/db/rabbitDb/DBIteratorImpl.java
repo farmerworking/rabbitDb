@@ -63,7 +63,8 @@ public class DBIteratorImpl {
         // skip new record since this iterator creation
         memtableIterator.prev();
       } else if (currentKey == null ||
-          comparator.compare(currentKey.getUserKey().getData(), internalKey.getUserKey().getData())
+          comparator
+              .compare(currentKey.getUserKey().getBytes(), internalKey.getUserKey().getBytes())
               == 0) {
         currentKey = internalKey;
         memtableIterator.prev();
@@ -90,7 +91,7 @@ public class DBIteratorImpl {
         deletedKey = internalKey.getUserKey();
         memtableIterator.next();
       } else if (deletedKey != null
-          && comparator.compare(deletedKey.getData(), internalKey.getUserKey().getData()) == 0) {
+          && comparator.compare(deletedKey.getBytes(), internalKey.getUserKey().getBytes()) == 0) {
         memtableIterator.next();
       } else {
         break;
