@@ -74,7 +74,7 @@ public class SliceTest {
     Slice slice = new Slice("what");
 
     assertEquals("what", slice.toString());
-    assertEquals("null", Slice.EMPTY_SLICE.toString());
+    assertEquals("", Slice.EMPTY_SLICE.toString());
   }
 
   @Test

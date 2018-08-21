@@ -11,7 +11,7 @@ public class Slice implements Comparable<Slice> {
   private int index;
 
   public Slice() {
-    this.data = null;
+    this.data = new char[0];
     this.size = 0;
     this.index = 0;
   }
@@ -46,6 +46,34 @@ public class Slice implements Comparable<Slice> {
     this.index = 0;
   }
 
+  public Slice substring(int beginIndex, int endIndex) {
+    if (beginIndex < 0) {
+      throw new IndexOutOfBoundsException("index out of range: " + beginIndex);
+    }
+    if (endIndex > size) {
+      throw new IndexOutOfBoundsException("index out of range: " + endIndex);
+    }
+    int subLen = endIndex - beginIndex;
+    if (subLen < 0) {
+      throw new IndexOutOfBoundsException("index out of range: " + subLen);
+    }
+
+    this.index = this.index + beginIndex;
+    this.size = endIndex - beginIndex;
+    return this;
+  }
+
+  public Slice concat(char[] data, int offset, int size) {
+    char[] buffer = new char[this.size + size];
+    System.arraycopy(this.data, index, buffer, 0, this.size);
+    System.arraycopy(data, offset, buffer, this.size, size);
+
+    this.data = buffer;
+    this.index = 0;
+    this.size = buffer.length;
+    return this;
+  }
+
   public int getSize() {
     return size;
   }
@@ -73,7 +101,7 @@ public class Slice implements Comparable<Slice> {
   }
 
   public void clear() {
-    this.data = null;
+    this.data = new char[0];
     this.size = 0;
     this.index = 0;
   }
