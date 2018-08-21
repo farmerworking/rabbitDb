@@ -16,6 +16,12 @@ public class Slice implements Comparable<Slice> {
     this.index = 0;
   }
 
+  public Slice(Slice target) {
+    this.data = target.getData();
+    this.index = 0;
+    this.size = this.data.length;
+  }
+
   public Slice(char[] data, int size, int index) {
     this.data = data;
     this.size = size;
@@ -49,11 +55,7 @@ public class Slice implements Comparable<Slice> {
       return data;
     }
 
-    if (index == 0 && data.length == size) {
-      return data;
-    } else {
-      return Arrays.copyOfRange(data, index, index + size);
-    }
+    return Arrays.copyOfRange(data, index, index + size);
   }
 
   public byte[] getBytes() {
