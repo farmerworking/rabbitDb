@@ -31,7 +31,7 @@ public class Memtable {
     InternalEntry seekEntry = new InternalEntry(internalKey, null /* no need*/);
     SkipListIterator<InternalEntry> iterator = table.iterator();
     iterator.seek(seekEntry);
-    if (iterator.valid()) {
+    if (iterator.isValid()) {
       InternalEntry entry = iterator.key();
 
       if (this.internalEntryComparator.getUserComparator()

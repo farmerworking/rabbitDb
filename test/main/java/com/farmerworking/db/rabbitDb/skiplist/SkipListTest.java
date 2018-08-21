@@ -86,13 +86,13 @@ public class SkipListTest {
     assertTrue(!list.contains(10L));
 
     SkipListIterator<Long> skipListIterator = list.iterator();
-    assertTrue(!skipListIterator.valid());
+    assertTrue(!skipListIterator.isValid());
     skipListIterator.seekToFirst();
-    assertTrue(!skipListIterator.valid());
+    assertTrue(!skipListIterator.isValid());
     skipListIterator.seek(100L);
-    assertTrue(!skipListIterator.valid());
+    assertTrue(!skipListIterator.isValid());
     skipListIterator.seekToLast();
-    assertTrue(!skipListIterator.valid());
+    assertTrue(!skipListIterator.isValid());
   }
 
   @Test
@@ -102,19 +102,19 @@ public class SkipListTest {
 
     SkipListIterator<Long> iter = list.iterator();
     iter.seekToFirst();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals(1000L, iter.key().longValue());
 
     iter.prev();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
     iter.next();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals(1000L, iter.key().longValue());
 
     iter.next();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
     iter.prev();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals(1000L, iter.key().longValue());
   }
 
@@ -125,11 +125,11 @@ public class SkipListTest {
 
     SkipListIterator<Long> iter = list.iterator();
     iter.seekToFirst();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals(1000L, iter.key().longValue());
 
     iter.prev();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
     iter.prev();
   }
 
@@ -140,11 +140,11 @@ public class SkipListTest {
 
     SkipListIterator<Long> iter = list.iterator();
     iter.seekToFirst();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals(1000L, iter.key().longValue());
 
     iter.next();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
     iter.next();
   }
 
@@ -174,18 +174,18 @@ public class SkipListTest {
 
     // Simple skipListIterator tests
     SkipListIterator<Long> skipListIterator = list.iterator();
-    assertTrue(!skipListIterator.valid());
+    assertTrue(!skipListIterator.isValid());
 
     skipListIterator.seek(0L);
-    assertTrue(skipListIterator.valid());
+    assertTrue(skipListIterator.isValid());
     assertEquals(keys.first(), skipListIterator.key());
 
     skipListIterator.seekToFirst();
-    assertTrue(skipListIterator.valid());
+    assertTrue(skipListIterator.isValid());
     assertEquals(keys.first(), skipListIterator.key());
 
     skipListIterator.seekToLast();
-    assertTrue(skipListIterator.valid());
+    assertTrue(skipListIterator.isValid());
     assertEquals(keys.last(), skipListIterator.key());
 
     // Forward iteration test
@@ -197,11 +197,11 @@ public class SkipListTest {
       java.util.Iterator<Long> iterator1 = (keys.tailSet((long) i)).iterator();
       for (int j = 0; j < 3; j++) {
         if (iterator1.hasNext()) {
-          assertTrue(iter.valid());
+          assertTrue(iter.isValid());
           assertEquals(iterator1.next(), iter.key());
           iter.next();
         } else {
-          assertTrue(!iter.valid());
+          assertTrue(!iter.isValid());
           break;
         }
       }
@@ -216,11 +216,11 @@ public class SkipListTest {
     reverseKeys.addAll(keys);
     java.util.Iterator<Long> iterator1 = reverseKeys.iterator();
     while (iterator1.hasNext()) {
-      assertTrue(iter.valid());
+      assertTrue(iter.isValid());
       assertEquals(iterator1.next(), iter.key());
       iter.prev();
     }
-    assertTrue(!iter.valid());
+    assertTrue(!iter.isValid());
   }
 
   // We want to make sure that with a single writer and multiple
@@ -304,7 +304,7 @@ public class SkipListTest {
               testNode.generation == 0 // true for seek case
                   || testNode.generation > initialState.get(testNode.key));
 
-          // Advance to next key in the valid key space
+          // Advance to next key in the isValid key space
           if (testNode.key < currentNode.key) {
             testNode = makeKey(testNode.key + 1, 0);
           } else {
@@ -312,7 +312,7 @@ public class SkipListTest {
           }
         }
 
-        if (!iter.valid()) {
+        if (!iter.isValid()) {
           break;
         }
       }
@@ -336,7 +336,7 @@ public class SkipListTest {
         iter.next();
         pos = makeKey(pos.key, pos.generation + 1);
       }
-      if (iter.valid()) {
+      if (iter.isValid()) {
         return Pair.of(pos, iter.key());
       } else {
         return Pair.of(pos, makeKey(K, 0));

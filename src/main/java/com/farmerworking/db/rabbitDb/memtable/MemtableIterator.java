@@ -1,18 +1,27 @@
 package com.farmerworking.db.rabbitDb.memtable;
 
+import com.farmerworking.db.rabbitDb.DBIterator;
 import com.farmerworking.db.rabbitDb.Slice;
+import com.farmerworking.db.rabbitDb.Status;
 import com.farmerworking.db.rabbitDb.skiplist.SkipListIterator;
 
-public class MemtableIterator {
+public class MemtableIterator implements DBIterator<InternalKey, Slice>{
 
   private final SkipListIterator<InternalEntry> iterator;
+  private Status status;
 
   MemtableIterator(SkipListIterator<InternalEntry> iterator) {
     this.iterator = iterator;
+    this.status = Status.ok();
   }
 
-  public boolean valid() {
-    return iterator.valid();
+  @Override
+  public Status getStatus() {
+    return this.status;
+  }
+
+  public boolean isValid() {
+    return iterator.isValid();
   }
 
   public void seek(InternalKey key) {

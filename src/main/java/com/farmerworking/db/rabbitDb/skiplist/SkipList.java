@@ -78,7 +78,7 @@ public class SkipList<T> {
 
     StringBuilder builder = new StringBuilder();
     iter.seekToFirst();
-    for (iter.seekToFirst(); iter.valid(); iter.next()) {
+    for (iter.seekToFirst(); iter.isValid(); iter.next()) {
       T entry = iter.key();
       builder.append("-->");
       builder.append(entry.toString());

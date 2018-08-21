@@ -35,7 +35,7 @@ public class DbImplTest {
     assertNull(getString("one"));
 
     DBIteratorImpl iter = db.iterator();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
   }
 
   @Test
@@ -52,17 +52,17 @@ public class DbImplTest {
 
     DBIteratorImpl iter = db.iterator();
     iter.seekToFirst();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals("one", new String(iter.key().getData()));
     assertEquals("1", new String(iter.value().getData()));
 
     iter.next();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals("two", new String(iter.key().getData()));
     assertEquals("22", new String(iter.value().getData()));
 
     iter.next();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
   }
 
   @Test
@@ -96,16 +96,16 @@ public class DbImplTest {
 
     // Simple skipListIterator tests
     DBIteratorImpl iterator = db.iterator();
-    assertFalse(iterator.valid());
+    assertFalse(iterator.isValid());
 
     iterator.seekToFirst();
-    assertTrue(iterator.valid());
+    assertTrue(iterator.isValid());
     assertEquals(state.firstKey().toString(), iterator.key().toString());
     assertEquals(((TreeMap<Slice, Slice>) state).firstEntry().getValue().toString(),
         iterator.value().toString());
 
     iterator.seekToLast();
-    assertTrue(iterator.valid());
+    assertTrue(iterator.isValid());
     assertEquals(state.lastKey().toString(), iterator.key().toString());
     assertEquals(((TreeMap<Slice, Slice>) state).lastEntry().getValue().toString(),
         iterator.value().toString());
@@ -120,13 +120,13 @@ public class DbImplTest {
           .tailMap(new Slice(String.valueOf(i)))).entrySet().iterator();
       for (int j = 0; j < 3; j++) {
         if (iterator1.hasNext()) {
-          assertTrue(iter.valid());
+          assertTrue(iter.isValid());
           Entry<Slice, Slice> entry = iterator1.next();
           assertEquals(entry.getKey().toString(), iter.key().toString());
           assertEquals(entry.getValue().toString(), iter.value().toString());
           iter.next();
         } else {
-          assertFalse(iter.valid());
+          assertFalse(iter.isValid());
           break;
         }
       }
@@ -141,13 +141,13 @@ public class DbImplTest {
     reverseState.putAll(state);
     Iterator<Entry<Slice, Slice>> iterator1 = reverseState.entrySet().iterator();
     while (iterator1.hasNext()) {
-      assertTrue(iter.valid());
+      assertTrue(iter.isValid());
       Entry<Slice, Slice> entry = iterator1.next();
       assertEquals(entry.getKey().toString(), iter.key().toString());
       assertEquals(entry.getValue().toString(), iter.value().toString());
       iter.prev();
     }
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
   }
 
 
@@ -177,37 +177,37 @@ public class DbImplTest {
     assertNull(getString("three"));
 
     iter.seekToFirst();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals("one", new String(iter.key().getData()));
     assertEquals("1", new String(iter.value().getData()));
 
     iter.next();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals("three", new String(iter.key().getData()));
     assertEquals("3", new String(iter.value().getData()));
 
     iter.next();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals("two", new String(iter.key().getData()));
     assertEquals("2", new String(iter.value().getData()));
 
     iter.next();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
 
     // snapshot after latest update
     iter = db.iterator();
     iter.seekToFirst();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals("one", new String(iter.key().getData()));
     assertEquals("1", new String(iter.value().getData()));
 
     iter.next();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals("two", new String(iter.key().getData()));
     assertEquals("22", new String(iter.value().getData()));
 
     iter.next();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
   }
 
   @Test
@@ -223,61 +223,61 @@ public class DbImplTest {
     assertNull(getString("2"));
     DBIteratorImpl iter = iterator(null);
     iter.seekToFirst();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals("1", iter.key().toString());
     assertEquals("111", iter.value().toString());
     iter.next();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
 
     assertNull(getString("1", snapshot));
     assertNull(getString("2", snapshot));
     iter = iterator(snapshot);
     iter.seekToFirst();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
 
     assertEquals("1", getString("1", snapshot1));
     assertNull(getString("2", snapshot1));
     iter = iterator(snapshot1);
     iter.seekToFirst();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals("1", iter.key().toString());
     assertEquals("1", iter.value().toString());
     iter.next();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
 
     assertEquals("111", getString("1", snapshot2));
     assertNull(getString("2", snapshot2));
     iter = iterator(snapshot2);
     iter.seekToFirst();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals("1", iter.key().toString());
     assertEquals("111", iter.value().toString());
     iter.next();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
 
     assertEquals("111", getString("1", snapshot3));
     assertEquals("2", getString("2", snapshot3));
     iter = iterator(snapshot3);
     iter.seekToFirst();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals("1", iter.key().toString());
     assertEquals("111", iter.value().toString());
     iter.next();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals("2", iter.key().toString());
     assertEquals("2", iter.value().toString());
     iter.next();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
 
     assertEquals("111", getString("1", snapshot4));
     assertNull(getString("2", snapshot4));
     iter = iterator(snapshot4);
     iter.seekToFirst();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertEquals("1", iter.key().toString());
     assertEquals("111", iter.value().toString());
     iter.next();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
   }
 
   private String getString(String key) {

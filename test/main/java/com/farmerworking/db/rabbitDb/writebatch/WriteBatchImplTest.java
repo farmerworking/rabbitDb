@@ -121,7 +121,7 @@ public class WriteBatchImplTest {
 
     StringBuilder builder = new StringBuilder();
     MemtableIterator iter = memtable.iterator();
-    for (iter.seekToFirst(); iter.valid(); iter.next()) {
+    for (iter.seekToFirst(); iter.isValid(); iter.next()) {
       InternalKey entry = iter.key();
       if (entry.getValueType() == ValueType.DELETE) {
         builder.append(String.format("Delete(%s)@%d",

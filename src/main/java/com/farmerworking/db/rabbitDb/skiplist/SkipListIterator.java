@@ -1,22 +1,37 @@
 package com.farmerworking.db.rabbitDb.skiplist;
 
-public class SkipListIterator<T> {
+import com.farmerworking.db.rabbitDb.DBIterator;
+import com.farmerworking.db.rabbitDb.Status;
+
+public class SkipListIterator<T> implements DBIterator<T, T>{
 
   private final SkipList<T> skipList;
+  private Status status;
   private Node<T> current;
 
   SkipListIterator(SkipList<T> skipList) {
     this.skipList = skipList;
     this.current = null;
+    this.status = Status.ok();
   }
 
-  public boolean valid() {
+  @Override
+  public Status getStatus() {
+    return status;
+  }
+
+  public boolean isValid() {
     return current != skipList.head && current != skipList.tail && current != null;
   }
 
   public T key() {
-    assert valid();
+    assert isValid();
     return current.getItem();
+  }
+
+  @Override
+  public T value() {
+    throw new UnsupportedOperationException();
   }
 
   public void next() {

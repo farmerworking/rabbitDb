@@ -5,7 +5,7 @@ import com.farmerworking.db.rabbitDb.memtable.MemtableIterator;
 import com.farmerworking.db.rabbitDb.memtable.ValueType;
 import org.iq80.leveldb.DBComparator;
 
-public class DBIteratorImpl {
+public class DBIteratorImpl implements DBIterator<Slice, Slice>{
 
   private final MemtableIterator memtableIterator;
   private final long sequence;
@@ -26,8 +26,8 @@ public class DBIteratorImpl {
     return memtableIterator.value();
   }
 
-  public boolean valid() {
-    return memtableIterator.valid();
+  public boolean isValid() {
+    return memtableIterator.isValid();
   }
 
   public void seekToFirst() {
@@ -38,6 +38,10 @@ public class DBIteratorImpl {
   public void seek(Slice key) {
     memtableIterator.seek(new InternalKey(key, sequence, null));
     nextValidUserKey(null);
+  }
+
+  public Status getStatus() {
+    return memtableIterator.getStatus();
   }
 
   public void next() {
@@ -56,7 +60,7 @@ public class DBIteratorImpl {
 
   private void prevValidUserKey() {
     InternalKey currentKey = null;
-    while (memtableIterator.valid()) {
+    while (memtableIterator.isValid()) {
       InternalKey internalKey = memtableIterator.key();
 
       if (internalKey.getSequence() > sequence) {
@@ -81,7 +85,7 @@ public class DBIteratorImpl {
   }
 
   private void nextValidUserKey(Slice deletedKey) {
-    while (memtableIterator.valid()) {
+    while (memtableIterator.isValid()) {
       InternalKey internalKey = memtableIterator.key();
 
       if (internalKey.getSequence() > sequence) {

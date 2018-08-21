@@ -27,7 +27,7 @@ public class MemtableTest {
     assertNull(get("one"));
     MemtableIterator iter = memtable.iterator();
     iter.seekToFirst();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
   }
 
   @Test
@@ -69,7 +69,7 @@ public class MemtableTest {
   public void testIterator() {
     MemtableIterator iter = memtable.iterator();
     iter.seekToFirst();
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
 
     long sequence = 100;
     put(sequence++, "one", "1");
@@ -83,7 +83,7 @@ public class MemtableTest {
     iter = memtable.iterator();
 
     iter.seekToFirst();
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertVariousAndNext(iter, "four", 105, ValueType.VALUE, "44");
     assertVariousAndNext(iter, "four", 103, ValueType.VALUE, "4");
     assertVariousAndNext(iter, "one", 106, ValueType.DELETE, null);
@@ -92,18 +92,18 @@ public class MemtableTest {
     assertVariousAndNext(iter, "three", 102, ValueType.VALUE, "3");
     assertVariousAndNext(iter, "two", 101, ValueType.VALUE, "2");
 
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
 
     iter.seek(new InternalKey(new Slice("four"), 100, null));
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertVariousAndNext(iter, "one", 106, ValueType.DELETE, null);
 
     iter.seek(new InternalKey(new Slice("one"), 110, null));
-    assertTrue(iter.valid());
+    assertTrue(iter.isValid());
     assertVariousAndNext(iter, "one", 106, ValueType.DELETE, null);
 
     iter.seek(new InternalKey(new Slice("x"), 1000, null));
-    assertFalse(iter.valid());
+    assertFalse(iter.isValid());
   }
 
   @Test
