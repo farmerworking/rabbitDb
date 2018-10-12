@@ -44,25 +44,36 @@ More details:
 1. attach an increasing sequence number for every record
 2. use a special typed record to represent delete operation without physical deletion
 3. base on above design design, we can support snapshot(only records whose sequence number <= sequence number user provided can be seen)
-4. use skipList data structure to hold data in memory so that data set is sorted and sequence number based snapshot can be implemented efficiently(records are key-grouped and latest record with larger sequence number comes first) 
+4. the data structure should first sort by key and second sort by sequence number to achieve efficient read/write operation. SkipList is suitable for this situation and chosen. 
 
-### Phase 2 --- Snapshot Support
+### Phase 2 --- capacity
 
-
-
-### Phase 3 --- capacity
-
-1. flush memory to disk --- level0 database
+1. flush memory to disk when it's full --- level0 database
 2. read from memory first, disk second
 
+design issues:
 
+1. encoding compatible —— hash, crc, fix length, variant length
+2. compression —— snappy, common prefix of key compression
+3. error detection —— CRC, file mark with magic number
+4. index
+5. filter —— bloom filter
+
+implementation steps:
+
+1. encoding
+2. block —— snappy compression, CRC
+3. sstable —— data block —— common prefix of key compression
+4. sstable —— index block
+5. sstable —— meta index block
+6. sstable —— meta block —— bloom filter
+7. sstable —— footer —— file mark with magic number
+8. sstable
 
 ### Phase 3 --- persistent
 
 1. log first before write memory
 2. db recover from log during startup
-
-
 
 ### Phase 4 --- reduce duplicate, sort,
 
