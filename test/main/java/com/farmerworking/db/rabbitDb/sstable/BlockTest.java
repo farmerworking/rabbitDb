@@ -21,7 +21,7 @@ public class BlockTest {
 
     @Test
     public void testReset() {
-        BlockBuilder builder = new BlockBuilder(options);
+        BlockBuilder builder = new BlockBuilder(options.blockRestartInterval(), options.comparator());
 
         assertTrue(builder.isEmpty());
         builder.add(new Slice("tmp"), new Slice("value"));
@@ -32,14 +32,14 @@ public class BlockTest {
 
     @Test(expected = AssertionError.class)
     public void testAddAfterFinish() {
-        BlockBuilder builder = new BlockBuilder(options);
+        BlockBuilder builder = new BlockBuilder(options.blockRestartInterval(), options.comparator());
         builder.finish();
         builder.add(new Slice(""), new Slice(""));
     }
 
     @Test(expected = AssertionError.class)
     public void testAddErrorKey() {
-        BlockBuilder builder = new BlockBuilder(options);
+        BlockBuilder builder = new BlockBuilder(options.blockRestartInterval(), options.comparator());
         builder.add(new Slice("2"), new Slice("two"));
         builder.add(new Slice("1"), new Slice("two"));
     }
@@ -77,7 +77,7 @@ public class BlockTest {
 
     @Test
     public void testIterNext() throws Exception {
-        BlockBuilder builder = new BlockBuilder(options);
+        BlockBuilder builder = new BlockBuilder(options.blockRestartInterval(), options.comparator());
         for (int i = 0; i < options.blockRestartInterval() * 6; i++) {
             builder.add(new Slice("test" + String.valueOf((char) i)), new Slice(String.valueOf(i)));
         }
@@ -97,7 +97,7 @@ public class BlockTest {
 
     @Test
     public void testIterPrev() throws Exception {
-        BlockBuilder builder = new BlockBuilder(options);
+        BlockBuilder builder = new BlockBuilder(options.blockRestartInterval(), options.comparator());
         for (int i = 0; i < options.blockRestartInterval() * 6; i++) {
             builder.add(new Slice("test" + String.valueOf((char) i)), new Slice(String.valueOf(i)));
         }
@@ -117,7 +117,7 @@ public class BlockTest {
 
     @Test
     public void testIterSeekNext() throws Exception {
-        BlockBuilder builder = new BlockBuilder(options);
+        BlockBuilder builder = new BlockBuilder(options.blockRestartInterval(), options.comparator());
         for (int i = 0; i < options.blockRestartInterval() * 6; i++) {
             builder.add(new Slice("test" + String.valueOf((char) i)), new Slice(String.valueOf(i)));
         }
@@ -137,7 +137,7 @@ public class BlockTest {
 
     @Test
     public void testIterSeekPrev() throws Exception {
-        BlockBuilder builder = new BlockBuilder(options);
+        BlockBuilder builder = new BlockBuilder(options.blockRestartInterval(), options.comparator());
         for (int i = 0; i < options.blockRestartInterval() * 6; i++) {
             builder.add(new Slice("test" + String.valueOf((char) i)), new Slice(String.valueOf(i)));
         }
@@ -157,7 +157,7 @@ public class BlockTest {
 
     @Test
     public void testNextPrev() throws Exception {
-        BlockBuilder builder = new BlockBuilder(options);
+        BlockBuilder builder = new BlockBuilder(options.blockRestartInterval(), options.comparator());
         for (int i = 0; i < options.blockRestartInterval() * 6; i++) {
             builder.add(new Slice("test" + String.valueOf((char) i)), new Slice(String.valueOf(i)));
         }
@@ -200,7 +200,7 @@ public class BlockTest {
 
     @Test
     public void testEmpty() throws Exception {
-        BlockBuilder builder = new BlockBuilder(options);
+        BlockBuilder builder = new BlockBuilder(options.blockRestartInterval(), options.comparator());
         Slice content = builder.finish();
         Block block = new Block(content);
         DBIterator<Slice, Slice> iterator = block.iterator(options.comparator());
@@ -211,7 +211,7 @@ public class BlockTest {
 
     @Test
     public void testSizeEstimate() {
-        BlockBuilder builder = new BlockBuilder(options);
+        BlockBuilder builder = new BlockBuilder(options.blockRestartInterval(), options.comparator());
         int emptySize = builder.currentSizeEstimate();
 
         builder.add(new Slice("one"), new Slice("two"));
