@@ -4,21 +4,21 @@ package com.farmerworking.db.rabbitDb;
  * Created by John on 18/8/21.
  */
 public interface DBIterator<K, V> {
-  Status getStatus();
+    Status getStatus();
 
-  boolean isValid();
+    boolean isValid();
 
-  void next();
+    void next();
 
-  void prev();
+    void prev();
 
-  void seekToFirst();
+    void seekToFirst();
 
-  void seekToLast();
+    void seekToLast();
 
-  void seek(K key);
+    void seek(K key);
 
-  K key();
+    K key();
 
-  V value();
+    V value();
 }

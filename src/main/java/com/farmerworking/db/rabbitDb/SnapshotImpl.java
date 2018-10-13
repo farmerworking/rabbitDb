@@ -6,16 +6,16 @@ import org.iq80.leveldb.Snapshot;
 
 public class SnapshotImpl implements Snapshot {
 
-  private
-  @Setter
-  @Getter
-  long sequence;
+    private
+    @Setter
+    @Getter
+    long sequence;
 
-  public SnapshotImpl(long sequence) {
-    this.sequence = sequence;
-  }
+    public SnapshotImpl(long sequence) {
+        this.sequence = sequence;
+    }
 
-  @Override
-  public void close() {
-  }
+    @Override
+    public void close() {
+    }
 }

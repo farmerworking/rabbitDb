@@ -4,9 +4,9 @@ import com.farmerworking.db.rabbitDb.Slice;
 
 public interface WriteBatchIterateHandler {
 
-  void put(Slice key, Slice value);
+    void put(Slice key, Slice value);
 
-  void delete(Slice key);
+    void delete(Slice key);
 
-  void setSequence(long sequence);
+    void setSequence(long sequence);
 }
