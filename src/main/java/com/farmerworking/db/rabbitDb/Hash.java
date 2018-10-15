@@ -33,4 +33,8 @@ public class Hash {
         }
         return h;
     }
+
+    public static int bloomHash(Slice key) {
+        return hash(key.getData(), 0xbc9f1d34);
+    }
 }
