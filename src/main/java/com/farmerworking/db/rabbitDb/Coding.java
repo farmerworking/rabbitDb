@@ -5,6 +5,9 @@ import org.apache.commons.lang3.tuple.Pair;
 public class Coding {
 
     public static final int FIXED_32_UNIT = 4;
+    public static final int FIXED_64_UNIT = 8;
+    public static final int MAX_VARY_64_UNIT = 10;
+    public static final int MAX_VARY_32_UNIT = 5;
 
     public static Pair<Integer, Integer> decodeFixed32(char[] buf, int offset) {
         return Pair.of(offset + 4, buf[offset] |
