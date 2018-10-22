@@ -37,6 +37,8 @@ class Harness {
 
         if (args.getName().equals("BLOCK_TEST")) {
             this.constructor = new BlockConstructor(options.comparator());
+        } else if (args.getName().equals("MEMTABLE_TEST")) {
+            this.constructor = new MemTableConstructor(options.comparator());
         } else {
             throw new RuntimeException("no support constructor for " + args.getName());
         }
