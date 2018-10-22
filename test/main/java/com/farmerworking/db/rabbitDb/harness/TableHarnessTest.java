@@ -12,6 +12,9 @@ import java.util.*;
  */
 public class TableHarnessTest {
     List<TestArgs> TEST_ARGS_LIST = Lists.newArrayList(
+            new TestArgs("DB_TEST", false, 16),
+            new TestArgs("DB_TEST", true, 16),
+
             new TestArgs("MEMTABLE_TEST", false, 16),
             new TestArgs("MEMTABLE_TEST", true, 16),
 
