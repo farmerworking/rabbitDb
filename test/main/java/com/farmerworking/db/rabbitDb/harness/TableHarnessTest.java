@@ -2,6 +2,7 @@ package com.farmerworking.db.rabbitDb.harness;
 
 import com.farmerworking.db.rabbitDb.utils.TestUtils;
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,43 +38,52 @@ public class TableHarnessTest {
 
     @Test
     public void testEmtpy() throws Exception {
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         for (int i = 0; i < TEST_ARGS_LIST.size(); i++) {
             harness.init(TEST_ARGS_LIST.get(i));
             harness.test(verbose);
+            System.out.println(TEST_ARGS_LIST.get(i).getName() + " " + methodName);
         }
     }
 
     @Test
     public void testSimpleEmptyKey() throws Exception {
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         for (int i = 0; i < TEST_ARGS_LIST.size(); i++) {
             harness.init(TEST_ARGS_LIST.get(i));
             harness.add("", "v");
             harness.test(verbose);
+            System.out.println(TEST_ARGS_LIST.get(i).getName() + " " + methodName);
         }
     }
 
     @Test
     public void testSimpleSingle() throws Exception {
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         for (int i = 0; i < TEST_ARGS_LIST.size(); i++) {
             harness.init(TEST_ARGS_LIST.get(i));
             harness.add("abc", "v");
             harness.test(verbose);
+            System.out.println(TEST_ARGS_LIST.get(i).getName() + " " + methodName);
         }
     }
 
     @Test
     public void testSimpleMulti() throws Exception {
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         for (int i = 0; i < TEST_ARGS_LIST.size(); i++) {
             harness.init(TEST_ARGS_LIST.get(i));
             harness.add("abc", "v");
             harness.add("abcd", "v");
             harness.add("ac", "v2");
             harness.test(verbose);
+            System.out.println(TEST_ARGS_LIST.get(i).getName() + " " + methodName);
         }
     }
 
     @Test
     public void testSimpleSpecialKey() throws Exception {
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append((char) 255);
         stringBuilder.append((char) 255);
@@ -82,15 +92,17 @@ public class TableHarnessTest {
             harness.init(TEST_ARGS_LIST.get(i));
             harness.add(s, "v3");
             harness.test(verbose);
+            System.out.println(TEST_ARGS_LIST.get(i).getName() + " " + methodName);
         }
     }
 
     @Test
     public void testRandomized() throws Exception {
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         for (int i = 0; i < TEST_ARGS_LIST.size(); i++) {
             harness.init(TEST_ARGS_LIST.get(i));
             for (int num_entries = 0; num_entries < 2000; num_entries += (num_entries < 50 ? 1 : 200)) {
-                if ((num_entries % 10) == 0 && verbose) {
+                if ((num_entries % 10) == 0) {
                     System.out.println(String.format("case %d of %d: num_entries = %d", (i + 1), TEST_ARGS_LIST.size(), num_entries));
                 }
                 Random random = new Random();
@@ -99,6 +111,7 @@ public class TableHarnessTest {
                 }
                 harness.test(verbose);
             }
+            System.out.println(TEST_ARGS_LIST.get(i).getName() + " " + methodName);
         }
     }
 }
