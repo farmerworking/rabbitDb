@@ -1,7 +1,7 @@
 package com.farmerworking.db.rabbitDb.sstable;
 
-import com.farmerworking.db.rabbitDb.Coding;
-import com.farmerworking.db.rabbitDb.Hash;
+import com.farmerworking.db.rabbitDb.utils.Coding;
+import com.farmerworking.db.rabbitDb.utils.Hash;
 import com.farmerworking.db.rabbitDb.Slice;
 import org.junit.Before;
 import org.junit.Test;

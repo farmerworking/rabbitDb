@@ -1,5 +1,6 @@
-package com.farmerworking.db.rabbitDb;
+package com.farmerworking.db.rabbitDb.utils;
 
+import com.farmerworking.db.rabbitDb.Slice;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class Coding {

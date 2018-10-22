@@ -1,4 +1,4 @@
-package com.farmerworking.db.rabbitDb;
+package com.farmerworking.db.rabbitDb.utils;
 
 import org.iq80.snappy.Snappy;
 

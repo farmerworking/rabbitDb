@@ -1,6 +1,7 @@
 package com.farmerworking.db.rabbitDb;
 
 import com.farmerworking.db.rabbitDb.sstable.FilterPolicy;
+import com.farmerworking.db.rabbitDb.utils.Hash;
 
 import java.util.Arrays;
 import java.util.List;

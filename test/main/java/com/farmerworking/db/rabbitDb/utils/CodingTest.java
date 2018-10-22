@@ -1,5 +1,7 @@
-package com.farmerworking.db.rabbitDb;
+package com.farmerworking.db.rabbitDb.utils;
 
+import com.farmerworking.db.rabbitDb.Slice;
+import com.farmerworking.db.rabbitDb.utils.Coding;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;

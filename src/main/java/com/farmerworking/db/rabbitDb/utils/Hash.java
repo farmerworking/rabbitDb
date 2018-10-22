@@ -1,4 +1,7 @@
-package com.farmerworking.db.rabbitDb;
+package com.farmerworking.db.rabbitDb.utils;
+
+import com.farmerworking.db.rabbitDb.Slice;
+import com.farmerworking.db.rabbitDb.utils.Coding;
 
 public class Hash {
     public static int hash(char[] data, int seed) {

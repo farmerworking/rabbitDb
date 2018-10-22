@@ -1,9 +1,8 @@
 package com.farmerworking.db.rabbitDb.sstable;
 
-import com.farmerworking.db.rabbitDb.Coding;
+import com.farmerworking.db.rabbitDb.utils.Coding;
 import com.farmerworking.db.rabbitDb.Slice;
 import org.iq80.leveldb.DBComparator;
-import org.iq80.leveldb.Options;
 
 import java.util.ArrayList;
 

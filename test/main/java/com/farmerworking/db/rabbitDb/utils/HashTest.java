@@ -1,5 +1,6 @@
-package com.farmerworking.db.rabbitDb;
+package com.farmerworking.db.rabbitDb.utils;
 
+import com.farmerworking.db.rabbitDb.utils.Hash;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

@@ -1,6 +1,7 @@
 package com.farmerworking.db.rabbitDb;
 
 import com.farmerworking.db.rabbitDb.sstable.FilterPolicy;
+import com.farmerworking.db.rabbitDb.utils.Coding;
 import org.junit.Before;
 import org.junit.Test;
 

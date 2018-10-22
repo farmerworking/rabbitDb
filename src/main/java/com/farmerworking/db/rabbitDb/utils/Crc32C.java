@@ -1,4 +1,4 @@
-package com.farmerworking.db.rabbitDb;
+package com.farmerworking.db.rabbitDb.utils;
 
 /*
  * Copyright (C) 2011 the original author or authors.
@@ -18,6 +18,8 @@ package com.farmerworking.db.rabbitDb;
  * limitations under the License.
  */
 
+import com.farmerworking.db.rabbitDb.OverflowUtils;
+
 import java.util.zip.Checksum;
 
 
@@ -26,7 +28,7 @@ import java.util.zip.Checksum;
  * polynomial used by iSCSI and implemented on many Intel chipsets supporting SSE4.2.
  */
 // this code was taken from Apache Hadoop
-final class Crc32C implements Checksum {
+public final class Crc32C implements Checksum {
 
     static final int[] T8_0 = new int[]{
             0x00000000, 0xF26B8303, 0xE13B70F7, 0x1350F3F4,
