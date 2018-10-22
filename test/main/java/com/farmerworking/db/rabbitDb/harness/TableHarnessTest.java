@@ -12,6 +12,12 @@ import java.util.*;
  */
 public class TableHarnessTest {
     List<TestArgs> TEST_ARGS_LIST = Lists.newArrayList(
+            new TestArgs("BLOCK_TEST", false, 16),
+            new TestArgs("BLOCK_TEST", false, 1),
+            new TestArgs("BLOCK_TEST", false, 1024),
+            new TestArgs("BLOCK_TEST", true, 16),
+            new TestArgs("BLOCK_TEST", true, 1),
+            new TestArgs("BLOCK_TEST", true, 1024)
     );
 
     private Harness harness;

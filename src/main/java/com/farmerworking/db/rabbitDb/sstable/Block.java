@@ -24,7 +24,7 @@ public class Block {
         }
     }
 
-    DBIterator<Slice, Slice> iterator(DBComparator comparator) {
+    public DBIterator<Slice, Slice> iterator(DBComparator comparator) {
         if (malformed) {
             return new ErrorIterator<>(Status.corruption("bad block contents"));
         } else {

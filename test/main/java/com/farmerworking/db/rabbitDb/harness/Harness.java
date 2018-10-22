@@ -34,6 +34,12 @@ class Harness {
         } else {
             options.comparator(ByteWiseComparator.getInstance());
         }
+
+        if (args.getName().equals("BLOCK_TEST")) {
+            this.constructor = new BlockConstructor(options.comparator());
+        } else {
+            throw new RuntimeException("no support constructor for " + args.getName());
+        }
     }
 
     public void add(String key, String value) {
