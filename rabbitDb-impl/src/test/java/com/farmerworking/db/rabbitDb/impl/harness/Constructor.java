@@ -1,10 +1,10 @@
 package com.farmerworking.db.rabbitDb.impl.harness;
 
+import com.farmerworking.db.rabbitDb.api.DBComparator;
 import com.farmerworking.db.rabbitDb.api.DBIterator;
+import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.api.Status;
 import org.apache.commons.lang3.tuple.Pair;
-import org.iq80.leveldb.DBComparator;
-import org.iq80.leveldb.Options;
 
 import java.util.Iterator;
 import java.util.Map;

@@ -41,10 +41,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.iq80.leveldb</groupId>
-            <artifactId>leveldb-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>

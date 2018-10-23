@@ -1,9 +1,9 @@
 package com.farmerworking.db.rabbitDb.impl.memtable;
 
+import com.farmerworking.db.rabbitDb.api.DBComparator;
 import com.farmerworking.db.rabbitDb.impl.Slice;
 import com.farmerworking.db.rabbitDb.impl.skiplist.SkipList;
 import com.farmerworking.db.rabbitDb.impl.skiplist.SkipListIterator;
-import org.iq80.leveldb.DBComparator;
 
 public class Memtable {
     private final InternalEntryComparator internalEntryComparator;

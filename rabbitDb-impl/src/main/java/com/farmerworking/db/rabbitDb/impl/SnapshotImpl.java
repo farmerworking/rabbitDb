@@ -1,8 +1,8 @@
 package com.farmerworking.db.rabbitDb.impl;
 
+import com.farmerworking.db.rabbitDb.api.Snapshot;
 import lombok.Getter;
 import lombok.Setter;
-import org.iq80.leveldb.Snapshot;
 
 public class SnapshotImpl implements Snapshot {
 
@@ -13,9 +13,5 @@ public class SnapshotImpl implements Snapshot {
 
     public SnapshotImpl(long sequence) {
         this.sequence = sequence;
-    }
-
-    @Override
-    public void close() {
     }
 }

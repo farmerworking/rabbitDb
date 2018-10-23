@@ -1,6 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl;
 
-import org.iq80.leveldb.DBComparator;
+import com.farmerworking.db.rabbitDb.api.DBComparator;
 import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;

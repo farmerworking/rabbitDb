@@ -1,10 +1,10 @@
 package com.farmerworking.db.rabbitDb.impl.sstable;
 
 import com.farmerworking.db.rabbitDb.api.DBIterator;
+import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
 import com.farmerworking.db.rabbitDb.impl.Slice;
 import com.farmerworking.db.rabbitDb.impl.utils.Coding;
-import org.iq80.leveldb.Options;
 import org.junit.Before;
 import org.junit.Test;
 

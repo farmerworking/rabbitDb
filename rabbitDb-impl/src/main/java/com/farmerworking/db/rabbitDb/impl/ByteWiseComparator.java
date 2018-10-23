@@ -1,7 +1,7 @@
 package com.farmerworking.db.rabbitDb.impl;
 
+import com.farmerworking.db.rabbitDb.api.DBComparator;
 import com.google.common.primitives.SignedBytes;
-import org.iq80.leveldb.DBComparator;
 
 import java.util.Arrays;
 

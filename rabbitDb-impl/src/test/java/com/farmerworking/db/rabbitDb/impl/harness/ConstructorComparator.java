@@ -1,6 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl.harness;
 
-import org.iq80.leveldb.DBComparator;
+import com.farmerworking.db.rabbitDb.api.DBComparator;
 
 import java.util.Comparator;
 

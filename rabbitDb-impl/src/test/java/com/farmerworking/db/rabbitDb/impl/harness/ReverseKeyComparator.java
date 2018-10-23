@@ -1,7 +1,7 @@
 package com.farmerworking.db.rabbitDb.impl.harness;
 
+import com.farmerworking.db.rabbitDb.api.DBComparator;
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
-import org.iq80.leveldb.DBComparator;
 
 class ReverseKeyComparator implements DBComparator {
     private String reverse(byte[] bytes) {

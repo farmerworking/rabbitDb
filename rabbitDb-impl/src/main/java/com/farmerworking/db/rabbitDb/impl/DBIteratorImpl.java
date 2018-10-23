@@ -1,11 +1,11 @@
 package com.farmerworking.db.rabbitDb.impl;
 
+import com.farmerworking.db.rabbitDb.api.DBComparator;
 import com.farmerworking.db.rabbitDb.api.DBIterator;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.memtable.InternalKey;
 import com.farmerworking.db.rabbitDb.impl.memtable.MemtableIterator;
 import com.farmerworking.db.rabbitDb.impl.memtable.ValueType;
-import org.iq80.leveldb.DBComparator;
 
 
 public class DBIteratorImpl implements DBIterator<Slice, Slice> {

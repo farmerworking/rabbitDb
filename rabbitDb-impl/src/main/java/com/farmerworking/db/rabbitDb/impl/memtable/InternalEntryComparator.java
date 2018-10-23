@@ -1,7 +1,7 @@
 package com.farmerworking.db.rabbitDb.impl.memtable;
 
+import com.farmerworking.db.rabbitDb.api.DBComparator;
 import lombok.Getter;
-import org.iq80.leveldb.DBComparator;
 
 import java.util.Comparator;
 
