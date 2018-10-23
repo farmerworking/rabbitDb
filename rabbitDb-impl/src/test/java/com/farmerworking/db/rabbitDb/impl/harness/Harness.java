@@ -7,6 +7,7 @@ import com.farmerworking.db.rabbitDb.impl.Slice;
 import com.farmerworking.db.rabbitDb.impl.harness.block.BlockConstructor;
 import com.farmerworking.db.rabbitDb.impl.harness.memtable.MemTableConstructor;
 import com.farmerworking.db.rabbitDb.impl.harness.db.DBConstructor;
+import com.farmerworking.db.rabbitDb.impl.harness.sstable.TableConstructor;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.tuple.Pair;
@@ -41,6 +42,8 @@ class Harness {
             this.constructor = new MemTableConstructor(options.comparator());
         } else if (args.getName().equals("DB_TEST")) {
             this.constructor = new DBConstructor(options.comparator());
+        } else if (args.getName().equals("TABLE_TEST")) {
+            this.constructor = new TableConstructor(options.comparator());
         } else {
             throw new RuntimeException("no support constructor for " + args.getName());
         }
@@ -139,6 +142,7 @@ class Harness {
         iter.seekToFirst();
 
         for(String key : keys) {
+            assertTrue(iter.isValid());
             assertEquals(toString(key, data.get(key)), toString(iter.key().toString(), iter.value().toString()));
             iter.next();
         }
@@ -153,6 +157,7 @@ class Harness {
 
         List<String> reverseKeys = Lists.reverse(keys);
         for(String key : reverseKeys) {
+            assertTrue(iter.isValid());
             assertEquals(toString(key, data.get(key)), toString(iter.key().toString(), iter.value().toString()));
             iter.prev();
         }
