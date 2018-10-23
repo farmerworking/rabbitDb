@@ -21,9 +21,6 @@ public class BlockHandle {
     }
 
     public void encodeTo(StringBuilder stringBuilder) {
-        assert offset != 0L;
-        assert size != 0L;
-
         Coding.putVariant64(stringBuilder, offset);
         Coding.putVariant64(stringBuilder, size);
     }
