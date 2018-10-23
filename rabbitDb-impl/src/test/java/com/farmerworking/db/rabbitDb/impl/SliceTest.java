@@ -73,7 +73,7 @@ public class SliceTest {
         Slice slice = new Slice("what");
 
         assertEquals("what", slice.toString());
-        assertEquals("", Slice.EMPTY_SLICE.toString());
+        assertEquals("", (new Slice()).toString());
     }
 
     @Test

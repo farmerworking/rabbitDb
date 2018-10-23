@@ -22,7 +22,7 @@ public class WriteBatchMemtableIterateHandler implements WriteBatchIterateHandle
 
     @Override
     public void delete(Slice key) {
-        memtable.add(new InternalKey(key, sequence, ValueType.DELETE), Slice.EMPTY_SLICE);
+        memtable.add(new InternalKey(key, sequence, ValueType.DELETE), new Slice());
         sequence++;
     }
 

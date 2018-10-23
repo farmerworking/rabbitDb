@@ -151,7 +151,7 @@ public class BlockIterator implements DBIterator<Slice, Slice> {
         current = restartOffset;
         restartIndex = restartsCount;
         status = Status.corruption("bad entry in block");
-        key = Slice.EMPTY_SLICE;
+        key = new Slice();
         value = null;
     }
 
@@ -192,7 +192,7 @@ public class BlockIterator implements DBIterator<Slice, Slice> {
     }
 
     private void seekToRestartPoint(int restartIndex) {
-        key = Slice.EMPTY_SLICE;
+        key = new Slice();
         this.restartIndex = restartIndex;
 
         int offset = getRestartPoint(restartIndex);

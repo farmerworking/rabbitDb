@@ -131,7 +131,7 @@ public class MemtableTest {
     }
 
     private void delete(long sequence, String key) {
-        memtable.add(new InternalKey(new Slice(key), sequence, ValueType.DELETE), Slice.EMPTY_SLICE);
+        memtable.add(new InternalKey(new Slice(key), sequence, ValueType.DELETE), new Slice());
     }
 
     private void assertVariousAndNext(MemtableIterator iterator, String userKey, long sequence,

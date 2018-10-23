@@ -46,7 +46,7 @@ public class BlockTest {
 
     @Test
     public void testMalformBlock() {
-        Block block = new Block(Slice.EMPTY_SLICE);
+        Block block = new Block(new Slice());
         DBIterator<Slice, Slice> iter = block.iterator(options.comparator());
         assertTrue(iter.getStatus().isCorruption());
         assertFalse(iter.isValid());

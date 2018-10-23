@@ -21,12 +21,12 @@ public class BloomFilterPolicyTest {
         public BloomTest() {
             this.policy = new BloomFilterPolicy(10);
             this.keys = new Vector<>();
-            this.filter = Slice.EMPTY_SLICE;
+            this.filter = new Slice();
         }
 
         public void reset() {
             keys.clear();
-            this.filter = Slice.EMPTY_SLICE;
+            this.filter = new Slice();
         }
 
         public void add(String key) {

@@ -3,9 +3,6 @@ package com.farmerworking.db.rabbitDb.impl;
 import java.util.Arrays;
 
 public class Slice implements Comparable<Slice> {
-
-    public static Slice EMPTY_SLICE = new Slice();
-
     private char[] data;
     private int size;
     private int index;
