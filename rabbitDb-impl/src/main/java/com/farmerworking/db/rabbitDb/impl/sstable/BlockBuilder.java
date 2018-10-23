@@ -36,7 +36,7 @@ public class BlockBuilder {
     public void add(Slice key, Slice value) {
         assert !finished;
         assert counter <= this.blockRestartInterval;
-        assert isEmpty() || this.comparator.compare(key.getBytes(), lastKey.getBytes()) > 0;
+        assert isEmpty() || this.comparator.compare(key.getData(), lastKey.toCharArray()) > 0;
 
         int shared = 0;
         if (counter < this.blockRestartInterval) {

@@ -35,8 +35,7 @@ public class Memtable {
             InternalEntry entry = iterator.key();
 
             if (this.internalEntryComparator.getUserComparator()
-                    .compare(entry.getInternalKey().getUserKey().getBytes(),
-                            internalKey.getUserKey().getBytes()) == 0) {
+                    .compare(entry.getInternalKey().getUserKey().getData(), internalKey.getUserKey().getData()) == 0) {
                 if (entry.getInternalKey().getValueType() == ValueType.DELETE) {
                     return null;
                 } else {

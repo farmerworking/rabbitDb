@@ -4,8 +4,12 @@ import com.farmerworking.db.rabbitDb.api.DBComparator;
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
 
 class ReverseKeyComparator implements DBComparator {
-    private String reverse(byte[] bytes) {
+    private String reverse(char[] bytes) {
         return new StringBuilder(new String(bytes)).reverse().toString();
+    }
+
+    private String reverse(String s) {
+        return new StringBuilder(s).reverse().toString();
     }
 
     @Override
@@ -14,22 +18,37 @@ class ReverseKeyComparator implements DBComparator {
     }
 
     @Override
-    public byte[] findShortestSeparator(byte[] start, byte[] limit) {
+    public char[] findShortestSeparator(char[] start, char[] limit) {
         String s = reverse(start);
         String l = reverse(limit);
-        byte[] bytes = ByteWiseComparator.getInstance().findShortestSeparator(s.getBytes(), l.getBytes());
-        return reverse(bytes).getBytes();
+        char[] bytes = ByteWiseComparator.getInstance().findShortestSeparator(s.toCharArray(), l.toCharArray());
+        return reverse(bytes).toCharArray();
     }
 
     @Override
-    public byte[] findShortSuccessor(byte[] key) {
+    public String findShortestSeparator(String start, String limit) {
+        return new String(findShortestSeparator(start.toCharArray(), limit.toCharArray()));
+    }
+
+    @Override
+    public char[] findShortSuccessor(char[] key) {
         String reverseKey = reverse(key);
-        byte[] bytes = ByteWiseComparator.getInstance().findShortSuccessor(reverseKey.getBytes());
-        return reverse(bytes).getBytes();
+        char[] bytes = ByteWiseComparator.getInstance().findShortSuccessor(reverseKey.toCharArray());
+        return reverse(bytes).toCharArray();
     }
 
     @Override
-    public int compare(byte[] o1, byte[] o2) {
-        return ByteWiseComparator.getInstance().compare(reverse(o1).getBytes(), reverse(o2).getBytes());
+    public String findShortSuccessor(String key) {
+        return new String(findShortSuccessor(key.toCharArray()));
+    }
+
+    @Override
+    public int compare(String o1, String o2) {
+        return ByteWiseComparator.getInstance().compare(reverse(o1), reverse(o2));
+    }
+
+    @Override
+    public int compare(char[] o1, char[] o2) {
+        return ByteWiseComparator.getInstance().compare(reverse(o1), reverse(o2));
     }
 }

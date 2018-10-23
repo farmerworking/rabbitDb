@@ -13,6 +13,6 @@ public class ConstructorComparator implements Comparator<String> {
 
     @Override
     public int compare(String o1, String o2) {
-        return comparator.compare(o1.getBytes(), o2.getBytes());
+        return comparator.compare(o1, o2);
     }
 }

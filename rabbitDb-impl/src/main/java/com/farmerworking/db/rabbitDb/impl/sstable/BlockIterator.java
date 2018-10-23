@@ -123,7 +123,7 @@ public class BlockIterator implements DBIterator<Slice, Slice> {
             }
 
             String middleKey = new String(data, offset, nonShared);
-            if (this.comparator.compare(middleKey.getBytes(), target.getBytes()) < 0) {
+            if (this.comparator.compare(middleKey.toCharArray(), target.getData()) < 0) {
                 // Key at "mid" is smaller than "target".  Therefore all
                 // blocks before "mid" are uninteresting.
                 left = mid;
@@ -140,7 +140,7 @@ public class BlockIterator implements DBIterator<Slice, Slice> {
             if (!parseNextKey()) {
                 return;
             }
-            if (this.comparator.compare(key.getBytes(), target.getBytes()) >= 0) {
+            if (this.comparator.compare(key.getData(), target.getData()) >= 0) {
                 return;
             }
         }

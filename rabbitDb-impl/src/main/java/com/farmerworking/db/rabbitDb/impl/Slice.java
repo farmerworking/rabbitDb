@@ -155,6 +155,6 @@ public class Slice implements Comparable<Slice> {
 
     @Override
     public int compareTo(Slice slice) {
-        return ByteWiseComparator.getInstance().compare(this.getBytes(), slice.getBytes());
+        return ByteWiseComparator.getInstance().compare(this.getData(), slice.getData());
     }
 }

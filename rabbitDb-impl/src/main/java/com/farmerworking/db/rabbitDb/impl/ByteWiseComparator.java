@@ -1,6 +1,7 @@
 package com.farmerworking.db.rabbitDb.impl;
 
 import com.farmerworking.db.rabbitDb.api.DBComparator;
+import com.google.common.primitives.Chars;
 import com.google.common.primitives.SignedBytes;
 
 import java.util.Arrays;
@@ -24,7 +25,7 @@ public class ByteWiseComparator implements DBComparator {
         return "leveldb.BytewiseComparator";
     }
 
-    public byte[] findShortestSeparator(byte[] start, byte[] limit) {
+    public char[] findShortestSeparator(char[] start, char[] limit) {
         int minLength = Math.min(start.length, limit.length);
 
         int index = 0;
@@ -32,23 +33,28 @@ public class ByteWiseComparator implements DBComparator {
             index++;
         }
 
-        if (index == minLength || Byte.MAX_VALUE == start[index] || start[index] + 1 >= limit[index]) {
+        if (index == minLength || Character.MAX_VALUE == start[index] || start[index] + 1 >= limit[index]) {
             return start;
         } else {
-            byte[] result = Arrays.copyOf(start, index + 1);
-            result[index] = (byte) (start[index] + 1);
+            char[] result = Arrays.copyOf(start, index + 1);
+            result[index] = (char) (start[index] + 1);
             assert compare(result, limit) < 0;
             return result;
         }
     }
 
-    public byte[] findShortSuccessor(byte[] key) {
-        int commonLength = 0;
-        Byte lastByte = null;
+    @Override
+    public String findShortestSeparator(String start, String limit) {
+        return new String(findShortestSeparator(start.toCharArray(), limit.toCharArray()));
+    }
 
-        for (byte b : key) {
-            if (Byte.MAX_VALUE != b) {
-                lastByte = (byte) (b + 1);
+    public char[] findShortSuccessor(char[] key) {
+        int commonLength = 0;
+        Character lastByte = null;
+
+        for (char b : key) {
+            if (Character.MAX_VALUE != b) {
+                lastByte = (char) (b + 1);
                 break;
             } else {
                 commonLength++;
@@ -58,15 +64,25 @@ public class ByteWiseComparator implements DBComparator {
         if (lastByte == null) {
             return key;
         } else if (commonLength == 0) {
-            return new byte[]{lastByte};
+            return new char[]{lastByte};
         } else {
-            byte[] result = Arrays.copyOf(key, commonLength + 1);
+            char[] result = Arrays.copyOf(key, commonLength + 1);
             result[commonLength] = lastByte;
             return result;
         }
     }
 
-    public int compare(byte[] o1, byte[] o2) {
-        return SignedBytes.lexicographicalComparator().compare(o1, o2);
+    @Override
+    public String findShortSuccessor(String key) {
+        return new String(findShortSuccessor(key.toCharArray()));
+    }
+
+    @Override
+    public int compare(String o1, String o2) {
+        return compare(o1.toCharArray(), o2.toCharArray());
+    }
+
+    public int compare(char[] o1, char[] o2) {
+        return Chars.lexicographicalComparator().compare(o1, o2);
     }
 }
