@@ -10,7 +10,7 @@ import com.farmerworking.db.rabbitDb.impl.file.RandomAccessFile;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class TableIterator implements DBIterator<Slice, Slice> {
+public class TableIterator extends TableReadBase implements DBIterator<Slice, Slice> {
     private final DBIterator<Slice, Slice> indexIter;
     private final ReadOptions readOptions;
     private final RandomAccessFile file;
@@ -138,22 +138,11 @@ public class TableIterator implements DBIterator<Slice, Slice> {
     }
 
     private DBIterator<Slice, Slice> readDataBlock(Slice blockHandleContent) {
-        BlockHandle blockHandle = new BlockHandle();
-        Pair<Status, Integer> pair = blockHandle.decodeFrom(blockHandleContent);
-        Status status = pair.getLeft();
-
-        if (status.isOk()) {
-            Pair<Status, Slice> readResult = file.read(blockHandle.getOffset(), blockHandle.getSize());
-            status = readResult.getLeft();
-
-            if (status.isOk()) {
-                Block block = new Block(readResult.getRight());
-                return block.iterator(this.comparator);
-            } else {
-                return new ErrorIterator<>(status);
-            }
+        Pair<Status, Block> pair = readBlock(file, readOptions, blockHandleContent);
+        if (pair.getLeft().isOk()) {
+            return pair.getRight().iterator(this.comparator);
         } else {
-            return new ErrorIterator<>(status);
+            return new ErrorIterator<>(pair.getLeft());
         }
     }
 

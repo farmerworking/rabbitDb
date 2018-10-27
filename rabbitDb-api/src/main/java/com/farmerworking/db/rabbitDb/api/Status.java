@@ -1,10 +1,12 @@
 package com.farmerworking.db.rabbitDb.api;
 
+import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Data
 public class Status {
     private short code;
     private String message;

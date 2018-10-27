@@ -4,6 +4,8 @@ import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.Slice;
 import com.farmerworking.db.rabbitDb.impl.file.WritableFile;
+import com.farmerworking.db.rabbitDb.impl.utils.Coding;
+import com.farmerworking.db.rabbitDb.impl.utils.Crc32C;
 
 public class TableBuilder {
     private final Options options;
@@ -169,7 +171,15 @@ public class TableBuilder {
         status = file.append(blockContent);
 
         if (status.isOk()) {
-            fileOffset += blockContent.getSize();
+            StringBuilder builder = new StringBuilder();
+            int crc = Crc32C.value(blockContent.toString());
+            int mask = Crc32C.mask(crc);
+            Coding.putFixed32(builder, mask);
+            status = file.append(new Slice(builder.toString()));
+
+            if (status.isOk()) {
+                fileOffset += blockContent.getSize() + Coding.FIXED_32_UNIT;
+            }
         }
         blockBuilder.reset();
     }

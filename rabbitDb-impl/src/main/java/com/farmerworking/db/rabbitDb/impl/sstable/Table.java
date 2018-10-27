@@ -8,7 +8,7 @@ import com.farmerworking.db.rabbitDb.impl.Slice;
 import com.farmerworking.db.rabbitDb.impl.file.RandomAccessFile;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class Table {
+public class Table extends TableReadBase {
     private final RandomAccessFile file;
     private final Options options;
     private final Block indexBlock;
@@ -34,12 +34,18 @@ public class Table {
         status = footer.decodeFrom(pair.getRight());
 
         if (status.isNotOk()) return Pair.of(status, null);
-        BlockHandle indexBlockHandle = footer.getIndexHandle();
-        pair = file.read((int)indexBlockHandle.getOffset(), (int)indexBlockHandle.getSize());
-        status = pair.getLeft();
 
+        ReadOptions readOptions = new ReadOptions();
+        if (options.paranoidChecks()) {
+            readOptions.verifyChecksums(true);
+        } else {
+            readOptions.verifyChecksums(false);
+        }
+
+        Pair<Status, Block> readResult = readBlock(file, readOptions, footer.getIndexHandle());
+        status = readResult.getLeft();
         if (status.isNotOk()) return Pair.of(status, null);
-        Block indexBlock = new Block(pair.getRight());
+        Block indexBlock = readResult.getRight();
         return Pair.of(status, new Table(options, indexBlock, file));
     }
 

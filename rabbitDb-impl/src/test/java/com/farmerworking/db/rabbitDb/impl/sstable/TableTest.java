@@ -3,7 +3,9 @@ package com.farmerworking.db.rabbitDb.impl.sstable;
 import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
+import com.farmerworking.db.rabbitDb.impl.Slice;
 import com.farmerworking.db.rabbitDb.impl.utils.ErrorRandomAccessFile;
+import com.farmerworking.db.rabbitDb.impl.utils.StringSink;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSource;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
@@ -52,5 +54,37 @@ public class TableTest {
 
         Pair<Status, Table> pair = Table.open(options, file, Footer.ENCODE_LENGTH);
         assertTrue(pair.getLeft().isCorruption());
+    }
+
+    @Test
+    public void testIndexBlockChecksumMissMatch1() {
+        char[] tableContent = prepareIndexBlockChecksumMissMatchCase();
+
+        Pair<Status, Table> pair = Table.open(options, new StringSource(new String(tableContent)), tableContent.length);
+        assertTrue(pair.getLeft().isOk());
+    }
+
+    @Test
+    public void testIndexBlockChecksumMissMatch2() {
+        char[] tableContent = prepareIndexBlockChecksumMissMatchCase();
+
+        options.paranoidChecks(true);
+        Pair<Status, Table> pair = Table.open(options, new StringSource(new String(tableContent)), tableContent.length);
+        assertTrue(pair.getLeft().isCorruption());
+        assertEquals("block checksum mismatch", pair.getLeft().getMessage());
+    }
+
+    private char[] prepareIndexBlockChecksumMissMatchCase() {
+        StringSink target = new StringSink();
+        TableBuilder builder = new TableBuilder(options, target);
+        builder.add(new Slice("a"), new Slice("b"));
+        Status status = builder.finish();
+        assertTrue(status.isOk());
+
+        // modify index block checksum
+        char[] tableContent = target.getContent().toCharArray();
+        int index = tableContent.length - Footer.ENCODE_LENGTH - 1;
+        tableContent[index] = (char)((int)tableContent[index] + 1);
+        return tableContent;
     }
 }
