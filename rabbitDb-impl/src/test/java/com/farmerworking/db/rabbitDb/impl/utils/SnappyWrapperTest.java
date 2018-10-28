@@ -11,19 +11,20 @@ public class SnappyWrapperTest {
     public void testCompressAndUncompress() {
         String content = "Hello snappy-java! Snappy-java is a JNI-based wrapper of Snappy, a fast compresser/decompresser.";
 
-        byte[] compress1 = SnappyWrapper.compress("");
-        byte[] compress2 = SnappyWrapper.compress("abc");
-        byte[] compress3 = SnappyWrapper.compress("123");
-        byte[] compress4 = SnappyWrapper.compress("中文");
-        byte[] compress5 = SnappyWrapper.compress("   ");
-        byte[] compress6 = SnappyWrapper.compress(content);
+        SnappyWrapper snappyWrapper = new SnappyWrapper();
+        byte[] compress1 = snappyWrapper.compress("");
+        byte[] compress2 = snappyWrapper.compress("abc");
+        byte[] compress3 = snappyWrapper.compress("123");
+        byte[] compress4 = snappyWrapper.compress("中文");
+        byte[] compress5 = snappyWrapper.compress("   ");
+        byte[] compress6 = snappyWrapper.compress(content);
 
-        String uncompress1 = SnappyWrapper.uncompress(compress1);
-        String uncompress2 = SnappyWrapper.uncompress(compress2);
-        String uncompress3 = SnappyWrapper.uncompress(compress3);
-        String uncompress4 = SnappyWrapper.uncompress(compress4);
-        String uncompress5 = SnappyWrapper.uncompress(compress5);
-        String uncompress6 = SnappyWrapper.uncompress(compress6);
+        String uncompress1 = snappyWrapper.uncompress(compress1);
+        String uncompress2 = snappyWrapper.uncompress(compress2);
+        String uncompress3 = snappyWrapper.uncompress(compress3);
+        String uncompress4 = snappyWrapper.uncompress(compress4);
+        String uncompress5 = snappyWrapper.uncompress(compress5);
+        String uncompress6 = snappyWrapper.uncompress(compress6);
 
         assertEquals("", uncompress1);
         assertEquals("abc", uncompress2);

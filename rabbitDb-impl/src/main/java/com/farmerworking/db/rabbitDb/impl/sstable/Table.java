@@ -6,6 +6,7 @@ import com.farmerworking.db.rabbitDb.api.ReadOptions;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.Slice;
 import com.farmerworking.db.rabbitDb.impl.file.RandomAccessFile;
+import com.farmerworking.db.rabbitDb.impl.utils.SnappyWrapper;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class Table extends TableReadBase {
@@ -42,7 +43,7 @@ public class Table extends TableReadBase {
             readOptions.verifyChecksums(false);
         }
 
-        Pair<Status, Block> readResult = readBlock(file, readOptions, footer.getIndexHandle());
+        Pair<Status, Block> readResult = readBlock(file, readOptions, footer.getIndexHandle(), new SnappyWrapper());
         status = readResult.getLeft();
         if (status.isNotOk()) return Pair.of(status, null);
         Block indexBlock = readResult.getRight();

@@ -1,9 +1,12 @@
 package com.farmerworking.db.rabbitDb.impl.sstable;
 
+import com.farmerworking.db.rabbitDb.api.CompressionType;
 import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
 import com.farmerworking.db.rabbitDb.impl.Slice;
+import com.farmerworking.db.rabbitDb.impl.utils.Coding;
+import com.farmerworking.db.rabbitDb.impl.utils.ErrorSnappy;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSink;
 import org.junit.Before;
 import org.junit.Test;
@@ -165,5 +168,25 @@ public class TableBuilderTest {
         Status status = builder.finish();
         assertTrue(status.isNotOk());
         assertEquals(0, file.getContent().length());
+    }
+
+    @Test
+    public void testCompressionErrorFallBack() {
+        // setup
+        options.compressionType(CompressionType.SNAPPY);
+        builder.setTest(true);
+
+        builder.add(new Slice("a"), new Slice("b"));
+        builder.flush();
+
+        String content = file.getContent();
+        assertEquals((char)CompressionType.SNAPPY.persistentId(), content.charAt(content.length() - Coding.FIXED_32_UNIT - 1));
+
+        builder.setSnappyWrapper(new ErrorSnappy());
+        builder.add(new Slice("c"), new Slice("d"));
+        builder.flush();
+
+        content = file.getContent();
+        assertEquals((char)CompressionType.NONE.persistentId(), content.charAt(content.length() - Coding.FIXED_32_UNIT - 1));
     }
 }

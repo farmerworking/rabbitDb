@@ -1,13 +1,17 @@
 package com.farmerworking.db.rabbitDb.impl.sstable;
 
+import com.farmerworking.db.rabbitDb.api.CompressionType;
 import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.Slice;
 import com.farmerworking.db.rabbitDb.impl.file.WritableFile;
 import com.farmerworking.db.rabbitDb.impl.utils.Coding;
 import com.farmerworking.db.rabbitDb.impl.utils.Crc32C;
+import com.farmerworking.db.rabbitDb.impl.utils.SnappyWrapper;
 
 public class TableBuilder {
+    public static final int BLOCK_TRAILER_SIZE = 1 + Coding.FIXED_32_UNIT;
+
     private final Options options;
     private final WritableFile file;
 
@@ -23,6 +27,8 @@ public class TableBuilder {
     private int numEntries;
     private int fileOffset;
     private boolean closed;
+    private SnappyWrapper snappyWrapper = new SnappyWrapper();
+    private boolean test = false;
 
     public TableBuilder(Options options, WritableFile file) {
         this.options = options;
@@ -164,27 +170,61 @@ public class TableBuilder {
         pendingIndexEntry = false;
     }
 
-    private void writeBlock(BlockBuilder blockBuilder, BlockHandle blockHandle) {
-        Slice blockContent = blockBuilder.finish();
+    private void writeBlock(BlockBuilder builder, BlockHandle handle) {
+        Slice blockContent = builder.finish();
+        int type = CompressionType.NONE.persistentId();
+
+        if (this.options.compressionType().equals(CompressionType.SNAPPY)) {
+            Slice compressContent = null;
+
+            try {
+                compressContent = new Slice(new String(snappyWrapper.compress(blockContent.toString()), "ISO-8859-1"));
+            } catch (Exception e) {
+                // fallback to no compression
+            }
+
+            if (compressContent != null && (test ||
+                    compressContent.getSize() < blockContent.getSize() - (blockContent.getSize() / 8))) {
+                blockContent = compressContent;
+                type = CompressionType.SNAPPY.persistentId();
+            }
+        }
+
+        writeRawBlock(blockContent, type, handle);
+        builder.reset();
+    }
+
+    private void writeRawBlock(Slice blockContent, int type, BlockHandle blockHandle) {
         blockHandle.setOffset(fileOffset);
         blockHandle.setSize(blockContent.getSize());
         status = file.append(blockContent);
 
         if (status.isOk()) {
             StringBuilder builder = new StringBuilder();
+            builder.append((char) type);
+
             int crc = Crc32C.value(blockContent.toString());
+            crc = Crc32C.extend(crc, builder.toString());
             int mask = Crc32C.mask(crc);
+
             Coding.putFixed32(builder, mask);
             status = file.append(new Slice(builder.toString()));
 
             if (status.isOk()) {
-                fileOffset += blockContent.getSize() + Coding.FIXED_32_UNIT;
+                fileOffset += blockContent.getSize() + BLOCK_TRAILER_SIZE;
             }
         }
-        blockBuilder.reset();
     }
 
     // only use for test
+    void setTest(boolean isTest) {
+        this.test = isTest;
+    }
+
+    void setSnappyWrapper(SnappyWrapper snappyWrapper) {
+        this.snappyWrapper = snappyWrapper;
+    }
+
     void setStatus(Status status) {
         this.status = status;
     }

@@ -4,12 +4,11 @@ import org.iq80.snappy.Snappy;
 
 
 public class SnappyWrapper {
-
-    public static byte[] compress(String s) {
+    public byte[] compress(String s) {
         return Snappy.compress(s.getBytes());
     }
 
-    public static String uncompress(byte[] data) {
+    public String uncompress(byte[] data) {
         return new String(Snappy.uncompress(data, 0, data.length));
     }
 }
