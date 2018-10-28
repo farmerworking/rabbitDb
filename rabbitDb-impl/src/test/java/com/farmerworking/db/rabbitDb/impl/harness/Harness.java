@@ -1,5 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl.harness;
 
+import com.farmerworking.db.rabbitDb.api.CompressionType;
 import com.farmerworking.db.rabbitDb.api.DBIterator;
 import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
@@ -7,7 +8,7 @@ import com.farmerworking.db.rabbitDb.impl.Slice;
 import com.farmerworking.db.rabbitDb.impl.harness.block.BlockConstructor;
 import com.farmerworking.db.rabbitDb.impl.harness.memtable.MemTableConstructor;
 import com.farmerworking.db.rabbitDb.impl.harness.db.DBConstructor;
-import com.farmerworking.db.rabbitDb.impl.harness.sstable.TableConstructor;
+import com.farmerworking.db.rabbitDb.impl.sstable.TableConstructor;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.tuple.Pair;
@@ -29,11 +30,16 @@ class Harness {
         options = new Options();
         options.blockRestartInterval(args.getRestartInterval());
         options.blockSize(256);
+        options.paranoidChecks(true);
 
         if (args.isReverseCompare()) {
             options.comparator(new ReverseKeyComparator());
         } else {
             options.comparator(ByteWiseComparator.getInstance());
+        }
+
+        if (args.isCompress()) {
+            options.compressionType(CompressionType.SNAPPY);
         }
 
         if (args.getName().equals("BLOCK_TEST")) {

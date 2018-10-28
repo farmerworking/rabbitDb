@@ -19,6 +19,13 @@ public class TableHarnessTest {
             new TestArgs("TABLE_TEST", true, 1),
             new TestArgs("TABLE_TEST", true, 1024),
 
+            new TestArgs("TABLE_TEST", false, 16, true),
+            new TestArgs("TABLE_TEST", false, 1, true),
+            new TestArgs("TABLE_TEST", false, 1024, true),
+            new TestArgs("TABLE_TEST", true, 16, true),
+            new TestArgs("TABLE_TEST", true, 1, true),
+            new TestArgs("TABLE_TEST", true, 1024, true),
+
             new TestArgs("DB_TEST", false, 16),
             new TestArgs("DB_TEST", true, 16),
 

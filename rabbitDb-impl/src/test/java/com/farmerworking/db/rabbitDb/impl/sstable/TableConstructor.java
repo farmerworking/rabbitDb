@@ -1,10 +1,8 @@
-package com.farmerworking.db.rabbitDb.impl.harness.sstable;
+package com.farmerworking.db.rabbitDb.impl.sstable;
 
 import com.farmerworking.db.rabbitDb.api.*;
 import com.farmerworking.db.rabbitDb.impl.Slice;
 import com.farmerworking.db.rabbitDb.impl.harness.Constructor;
-import com.farmerworking.db.rabbitDb.impl.sstable.Table;
-import com.farmerworking.db.rabbitDb.impl.sstable.TableBuilder;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSink;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSource;
 import org.apache.commons.lang3.tuple.Pair;
@@ -22,8 +20,10 @@ public class TableConstructor extends Constructor {
 
     @Override
     public Status finishImpl(Options options, Vector<String> keys) {
+        options.paranoidChecks(true);
         StringSink file = new StringSink();
         TableBuilder builder = new TableBuilder(options, file);
+        builder.setTest(true);
 
         for(String key : keys) {
             builder.add(new Slice(key), new Slice(data.get(key)));
@@ -42,6 +42,8 @@ public class TableConstructor extends Constructor {
 
     @Override
     public DBIterator newIterator() {
-        return this.table.iterator(new ReadOptions());
+        ReadOptions readOptions = new ReadOptions();
+        readOptions.verifyChecksums(true);
+        return this.table.iterator(readOptions);
     }
 }
