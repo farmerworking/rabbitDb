@@ -1,6 +1,7 @@
 package com.farmerworking.db.rabbitDb.impl.sstable;
 
-import com.farmerworking.db.rabbitDb.impl.Slice;
+import com.farmerworking.db.rabbitDb.api.FilterPolicy;
+import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.utils.Coding;
 import com.farmerworking.db.rabbitDb.impl.utils.Hash;
 import org.junit.Before;

@@ -4,7 +4,7 @@ import com.farmerworking.db.rabbitDb.api.CompressionType;
 import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
-import com.farmerworking.db.rabbitDb.impl.Slice;
+import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.utils.Coding;
 import com.farmerworking.db.rabbitDb.impl.utils.ErrorSnappy;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSink;

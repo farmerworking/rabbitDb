@@ -1,6 +1,4 @@
-package com.farmerworking.db.rabbitDb.impl.sstable;
-
-import com.farmerworking.db.rabbitDb.impl.Slice;
+package com.farmerworking.db.rabbitDb.api;
 
 import java.util.List;
 

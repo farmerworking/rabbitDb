@@ -4,7 +4,7 @@ import com.farmerworking.db.rabbitDb.api.CompressionType;
 import com.farmerworking.db.rabbitDb.api.DBIterator;
 import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
-import com.farmerworking.db.rabbitDb.impl.Slice;
+import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.harness.block.BlockConstructor;
 import com.farmerworking.db.rabbitDb.impl.harness.memtable.MemTableConstructor;
 import com.farmerworking.db.rabbitDb.impl.harness.db.DBConstructor;

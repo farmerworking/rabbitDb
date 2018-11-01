@@ -1,7 +1,7 @@
 package com.farmerworking.db.rabbitDb.impl.sstable;
 
 import com.farmerworking.db.rabbitDb.api.*;
-import com.farmerworking.db.rabbitDb.impl.Slice;
+import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.harness.Constructor;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSink;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSource;

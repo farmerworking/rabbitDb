@@ -2,7 +2,7 @@ package com.farmerworking.db.rabbitDb.impl.harness.memtable;
 
 
 import com.farmerworking.db.rabbitDb.api.DBIterator;
-import com.farmerworking.db.rabbitDb.impl.Slice;
+import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.memtable.InternalKey;
 import com.farmerworking.db.rabbitDb.impl.memtable.MemtableIterator;

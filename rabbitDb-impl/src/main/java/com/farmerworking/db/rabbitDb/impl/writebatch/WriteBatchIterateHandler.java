@@ -1,6 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl.writebatch;
 
-import com.farmerworking.db.rabbitDb.impl.Slice;
+import com.farmerworking.db.rabbitDb.api.Slice;
 
 public interface WriteBatchIterateHandler {
 

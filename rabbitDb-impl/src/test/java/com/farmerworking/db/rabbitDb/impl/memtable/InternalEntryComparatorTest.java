@@ -1,7 +1,7 @@
 package com.farmerworking.db.rabbitDb.impl.memtable;
 
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
-import com.farmerworking.db.rabbitDb.impl.Slice;
+import com.farmerworking.db.rabbitDb.api.Slice;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

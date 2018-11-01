@@ -1,6 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl.memtable;
 
-import com.farmerworking.db.rabbitDb.impl.Slice;
+import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.skiplist.Sizeable;
 import lombok.Getter;
 

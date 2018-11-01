@@ -7,7 +7,7 @@ import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
 import com.farmerworking.db.rabbitDb.impl.EmptyIterator;
 import com.farmerworking.db.rabbitDb.impl.ErrorIterator;
-import com.farmerworking.db.rabbitDb.impl.Slice;
+import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSink;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSource;
 import org.apache.commons.lang3.tuple.Pair;

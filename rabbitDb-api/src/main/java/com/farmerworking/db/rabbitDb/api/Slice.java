@@ -1,4 +1,6 @@
-package com.farmerworking.db.rabbitDb.impl;
+package com.farmerworking.db.rabbitDb.api;
+
+import com.google.common.primitives.Chars;
 
 import java.util.Arrays;
 
@@ -152,6 +154,6 @@ public class Slice implements Comparable<Slice> {
 
     @Override
     public int compareTo(Slice slice) {
-        return ByteWiseComparator.getInstance().compare(this.getData(), slice.getData());
+        return Chars.lexicographicalComparator().compare(this.getData(), slice.getData());
     }
 }

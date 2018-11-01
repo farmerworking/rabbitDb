@@ -1,5 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl;
 
+import com.farmerworking.db.rabbitDb.api.Slice;
 import org.junit.Test;
 
 import java.util.Arrays;

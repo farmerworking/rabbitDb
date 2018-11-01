@@ -1,6 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl.file;
 
-import com.farmerworking.db.rabbitDb.impl.Slice;
+import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.api.Status;
 import org.apache.commons.lang3.tuple.Pair;
 
