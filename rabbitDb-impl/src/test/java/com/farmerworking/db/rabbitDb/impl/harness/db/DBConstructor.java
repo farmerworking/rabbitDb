@@ -32,4 +32,14 @@ public class DBConstructor extends Constructor {
     public DBIterator newIterator() {
         return db.iterator();
     }
+
+    @Override
+    public boolean suppportGet() {
+        return true;
+    }
+
+    @Override
+    public Slice get(Slice key) {
+        return db.get(key);
+    }
 }

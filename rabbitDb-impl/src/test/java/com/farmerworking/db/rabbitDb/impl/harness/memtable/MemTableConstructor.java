@@ -5,6 +5,7 @@ import com.farmerworking.db.rabbitDb.api.DBIterator;
 import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.api.Status;
+import com.farmerworking.db.rabbitDb.impl.SequenceGenerator;
 import com.farmerworking.db.rabbitDb.impl.harness.Constructor;
 import com.farmerworking.db.rabbitDb.impl.memtable.InternalKey;
 import com.farmerworking.db.rabbitDb.impl.memtable.Memtable;
@@ -34,5 +35,15 @@ public class MemTableConstructor extends Constructor {
     @Override
     public DBIterator newIterator() {
         return new KeyConvertingIterator(memtable.iterator());
+    }
+
+    @Override
+    public boolean suppportGet() {
+        return true;
+    }
+
+    @Override
+    public Slice get(Slice key) {
+        return memtable.get(new InternalKey(key, SequenceGenerator.last(), null));
     }
 }

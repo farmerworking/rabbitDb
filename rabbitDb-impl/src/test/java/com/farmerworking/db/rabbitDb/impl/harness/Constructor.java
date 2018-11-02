@@ -1,9 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl.harness;
 
-import com.farmerworking.db.rabbitDb.api.DBComparator;
-import com.farmerworking.db.rabbitDb.api.DBIterator;
-import com.farmerworking.db.rabbitDb.api.Options;
-import com.farmerworking.db.rabbitDb.api.Status;
+import com.farmerworking.db.rabbitDb.api.*;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Iterator;
@@ -41,6 +38,10 @@ public abstract class Constructor {
     public abstract Status finishImpl(Options options, Vector<String> keys) ;
 
     public abstract DBIterator newIterator() ;
+
+    public abstract boolean suppportGet() ;
+
+    public abstract Slice get(Slice key) ;
 
     public Map<String, String> data() {
         return data;

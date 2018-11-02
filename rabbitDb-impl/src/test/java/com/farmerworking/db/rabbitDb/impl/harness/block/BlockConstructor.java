@@ -8,6 +8,7 @@ import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.harness.Constructor;
 import com.farmerworking.db.rabbitDb.impl.sstable.Block;
 import com.farmerworking.db.rabbitDb.impl.sstable.BlockBuilder;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Vector;
 
@@ -34,5 +35,15 @@ public class BlockConstructor extends Constructor {
     @Override
     public DBIterator newIterator() {
         return block.iterator(this.comparator);
+    }
+
+    @Override
+    public boolean suppportGet() {
+        return false;
+    }
+
+    @Override
+    public Slice get(Slice key) {
+        throw new NotImplementedException();
     }
 }

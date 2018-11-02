@@ -19,8 +19,7 @@ import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 class Harness {
     private Options options;
@@ -40,6 +39,10 @@ class Harness {
 
         if (args.isCompress()) {
             options.compressionType(CompressionType.SNAPPY);
+        }
+
+        if (args.getFilterPolicy() != null) {
+            options.filterPolicy(args.getFilterPolicy());
         }
 
         if (args.getName().equals("BLOCK_TEST")) {
@@ -71,6 +74,19 @@ class Harness {
         testForwardScan(keys, data, verbose);
         testBackwardScan(keys, data, verbose);
         testRandomAccess(keys, data, verbose);
+        testGet(keys, data, verbose);
+    }
+
+    private void testGet(Vector<String> keys, ConcurrentSkipListMap<String, String> data, boolean verbose) {
+        if (constructor.suppportGet()) {
+            for(String key : keys) {
+                Slice value = constructor.get(new Slice(key));
+                assertNotNull(value);
+                assertEquals(toString(key, data.get(key)), toString(key, value.toString()));
+            }
+
+            assertNull(constructor.get(new Slice("" + (char)2)));
+        }
     }
 
     private void testRandomAccess(Vector<String> keys, ConcurrentSkipListMap<String, String> data, boolean verbose) {
