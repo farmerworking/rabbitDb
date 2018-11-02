@@ -131,18 +131,9 @@ public class TableIterator extends TableReadBase implements DBIterator<Slice, Sl
                 return;
             }
 
-            DBIterator<Slice, Slice> iter = readDataBlock(blockHandleContent);
+            DBIterator<Slice, Slice> iter = readDataBlock(file, readOptions, comparator, blockHandleContent);
             dataBlockHandle = blockHandleContent.toString();
             setDataBlockIter(iter);
-        }
-    }
-
-    private DBIterator<Slice, Slice> readDataBlock(Slice blockHandleContent) {
-        Pair<Status, Block> pair = readBlock(file, readOptions, blockHandleContent);
-        if (pair.getLeft().isOk()) {
-            return pair.getRight().iterator(this.comparator);
-        } else {
-            return new ErrorIterator<>(pair.getLeft());
         }
     }
 

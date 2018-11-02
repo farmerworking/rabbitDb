@@ -1,9 +1,7 @@
 package com.farmerworking.db.rabbitDb.impl.sstable;
 
-import com.farmerworking.db.rabbitDb.api.CompressionType;
-import com.farmerworking.db.rabbitDb.api.ReadOptions;
-import com.farmerworking.db.rabbitDb.api.Status;
-import com.farmerworking.db.rabbitDb.api.Slice;
+import com.farmerworking.db.rabbitDb.api.*;
+import com.farmerworking.db.rabbitDb.impl.ErrorIterator;
 import com.farmerworking.db.rabbitDb.impl.file.RandomAccessFile;
 import com.farmerworking.db.rabbitDb.impl.utils.Coding;
 import com.farmerworking.db.rabbitDb.impl.utils.Crc32C;
@@ -34,6 +32,29 @@ public class TableReadBase {
         } else {
             return Pair.of(status, null);
         }
+    }
+
+    protected static DBIterator<Slice, Slice> readDataBlock(RandomAccessFile file, ReadOptions readOptions, DBComparator comparator, Slice blockHandleContent) {
+        Pair<Status, Block> pair = readBlock(file, readOptions, blockHandleContent);
+        if (pair.getLeft().isOk()) {
+            return pair.getRight().iterator(comparator);
+        } else {
+            return new ErrorIterator<>(pair.getLeft());
+        }
+    }
+
+    protected static DBIterator<Slice, Slice> readDataBlock(RandomAccessFile file, ReadOptions readOptions, DBComparator comparator, BlockHandle blockHandle) {
+        Pair<Status, Block> pair = readBlock(file, readOptions, blockHandle);
+        if (pair.getLeft().isOk()) {
+            return pair.getRight().iterator(comparator);
+        } else {
+            return new ErrorIterator<>(pair.getLeft());
+        }
+    }
+
+
+    static Pair<Status, Block> readBlock(RandomAccessFile file, ReadOptions readOptions, BlockHandle blockHandle) {
+        return readBlock(file, readOptions, blockHandle, new SnappyWrapper());
     }
 
     static Pair<Status, Block> readBlock(RandomAccessFile file, ReadOptions readOptions, BlockHandle blockHandle, SnappyWrapper snappyWrapper) {

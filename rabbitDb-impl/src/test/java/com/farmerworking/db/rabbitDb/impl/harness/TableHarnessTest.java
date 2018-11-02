@@ -1,5 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl.harness;
 
+import com.farmerworking.db.rabbitDb.impl.BloomFilterPolicy;
 import com.farmerworking.db.rabbitDb.impl.utils.TestUtils;
 import com.google.common.collect.Lists;
 import org.junit.Before;
@@ -19,12 +20,26 @@ public class TableHarnessTest {
             new TestArgs("TABLE_TEST", true, 1),
             new TestArgs("TABLE_TEST", true, 1024),
 
+            new TestArgs("TABLE_TEST", false, 16, new BloomFilterPolicy(10)),
+            new TestArgs("TABLE_TEST", false, 1, new BloomFilterPolicy(10)),
+            new TestArgs("TABLE_TEST", false, 1024, new BloomFilterPolicy(10)),
+            new TestArgs("TABLE_TEST", true, 16, new BloomFilterPolicy(10)),
+            new TestArgs("TABLE_TEST", true, 1, new BloomFilterPolicy(10)),
+            new TestArgs("TABLE_TEST", true, 1024, new BloomFilterPolicy(10)),
+
             new TestArgs("TABLE_TEST", false, 16, true),
             new TestArgs("TABLE_TEST", false, 1, true),
             new TestArgs("TABLE_TEST", false, 1024, true),
             new TestArgs("TABLE_TEST", true, 16, true),
             new TestArgs("TABLE_TEST", true, 1, true),
             new TestArgs("TABLE_TEST", true, 1024, true),
+
+            new TestArgs("TABLE_TEST", false, 16, true, new BloomFilterPolicy(10)),
+            new TestArgs("TABLE_TEST", false, 1, true, new BloomFilterPolicy(10)),
+            new TestArgs("TABLE_TEST", false, 1024, true, new BloomFilterPolicy(10)),
+            new TestArgs("TABLE_TEST", true, 16, true, new BloomFilterPolicy(10)),
+            new TestArgs("TABLE_TEST", true, 1, true, new BloomFilterPolicy(10)),
+            new TestArgs("TABLE_TEST", true, 1024, true, new BloomFilterPolicy(10)),
 
             new TestArgs("DB_TEST", false, 16),
             new TestArgs("DB_TEST", true, 16),

@@ -46,4 +46,8 @@ public class Block {
                 .decodeFixed32(blockContent.getData(), blockContent.getSize() - Coding.FIXED_32_UNIT);
         return pair.getRight();
     }
+
+    Slice getBlockContent() {
+        return blockContent;
+    }
 }

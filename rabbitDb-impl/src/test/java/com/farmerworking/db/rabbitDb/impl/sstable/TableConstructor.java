@@ -2,6 +2,8 @@ package com.farmerworking.db.rabbitDb.impl.sstable;
 
 import com.farmerworking.db.rabbitDb.api.*;
 import com.farmerworking.db.rabbitDb.api.Slice;
+import com.farmerworking.db.rabbitDb.impl.SequenceGenerator;
+import com.farmerworking.db.rabbitDb.impl.SnapshotImpl;
 import com.farmerworking.db.rabbitDb.impl.harness.Constructor;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSink;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSource;
@@ -45,5 +47,20 @@ public class TableConstructor extends Constructor {
         ReadOptions readOptions = new ReadOptions();
         readOptions.verifyChecksums(true);
         return this.table.iterator(readOptions);
+    }
+
+    @Override
+    public boolean suppportGet() {
+        return true;
+    }
+
+    @Override
+    public Slice get(Slice key) {
+        ReadOptions readOptions = new ReadOptions();
+        readOptions.verifyChecksums(true);
+        readOptions.snapshot(new SnapshotImpl(SequenceGenerator.last()));
+        Pair<Status, Slice> pair = table.get(readOptions, key);
+        assert pair.getLeft().isOk();
+        return pair.getRight();
     }
 }

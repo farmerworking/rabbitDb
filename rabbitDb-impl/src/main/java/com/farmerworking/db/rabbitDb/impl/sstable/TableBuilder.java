@@ -30,6 +30,9 @@ public class TableBuilder {
     private SnappyWrapper snappyWrapper = new SnappyWrapper();
     private boolean test = false;
 
+    // filter
+    private FilterBlockBuilder filterBlockBuilder;
+
     public TableBuilder(Options options, WritableFile file) {
         this.options = options;
         this.file = file;
@@ -46,6 +49,12 @@ public class TableBuilder {
         this.numEntries = 0;
         this.fileOffset = 0;
         this.closed = false;
+
+        // filter
+        if (options.filterPolicy() != null) {
+            this.filterBlockBuilder = new FilterBlockBuilder(options.filterPolicy());
+            this.filterBlockBuilder.startBlock(fileOffset);
+        }
     }
 
     // Add key,value to the table being constructed.
@@ -63,6 +72,9 @@ public class TableBuilder {
         this.lastKey = key.toString();
         dataBlockBuilder.add(key, value);
         numEntries ++;
+        if (this.filterBlockBuilder != null) {
+            this.filterBlockBuilder.addKey(new Slice(this.lastKey));
+        }
 
         if (dataBlockBuilder.currentSizeEstimate() >= options.blockSize()) {
             flush();
@@ -87,8 +99,26 @@ public class TableBuilder {
             pendingIndex(null);
         }
 
+        BlockHandle filterBlockHandle = new BlockHandle(), metaIndexHandle = new BlockHandle();
+
+        // filter
+        if (this.status.isOk() && this.filterBlockBuilder != null) {
+            Slice filterContent = this.filterBlockBuilder.finish();
+            writeRawBlock(filterContent, CompressionType.NONE.persistentId(), filterBlockHandle);
+        }
+
+        if (this.status.isOk()) {
+            BlockBuilder metaIndexBuilder = new BlockBuilder(this.options.blockRestartInterval(), this.options.comparator());
+            if (this.filterBlockBuilder != null) {
+                StringBuilder s = new StringBuilder();
+                filterBlockHandle.encodeTo(s);
+                metaIndexBuilder.add(new Slice("filter." + this.options.filterPolicy().name()), new Slice(s.toString()));
+            }
+
+            writeBlock(metaIndexBuilder, metaIndexHandle);
+        }
+
         // index
-        BlockHandle metaIndexHandle = new BlockHandle(fileOffset, 0);
         BlockHandle indexHandle = new BlockHandle();
         if (this.status.isOk()) {
             writeBlock(indexBlockBuilder, indexHandle);
@@ -125,6 +155,9 @@ public class TableBuilder {
 
         writeBlock(dataBlockBuilder, pendingBlockHandle);
         if (status.isOk()) {
+            if (filterBlockBuilder != null) {
+                filterBlockBuilder.startBlock(fileOffset);
+            }
             pendingIndexEntry = true;
             status = file.flush();
         }

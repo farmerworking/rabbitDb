@@ -15,12 +15,21 @@ public class Options {
     private DBComparator comparator;
     private Logger logger;
     private long cacheSize;
+    private FilterPolicy filterPolicy;
 
     static void checkArgNotNull(Object value, String name)
     {
         if (value == null) {
             throw new IllegalArgumentException("The " + name + " argument cannot be null");
         }
+    }
+
+    public FilterPolicy filterPolicy() {
+        return this.filterPolicy;
+    }
+
+    public void filterPolicy(FilterPolicy filterPolicy) {
+        this.filterPolicy = filterPolicy;
     }
 
     public boolean createIfMissing()
