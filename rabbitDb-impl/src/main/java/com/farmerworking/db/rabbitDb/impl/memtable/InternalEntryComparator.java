@@ -17,8 +17,8 @@ class InternalEntryComparator implements Comparator<InternalEntry> {
 
     public int compare(InternalEntry o1, InternalEntry o2) {
         int compareResult = userComparator
-                .compare(o1.getInternalKey().getUserKey().getData(),
-                        o2.getInternalKey().getUserKey().getData());
+                .compare(o1.getInternalKey().getUserKey(),
+                        o2.getInternalKey().getUserKey());
 
         if (compareResult == 0) {
             return Long.compare(o2.getInternalKey().getSequence(), o1.getInternalKey().getSequence());

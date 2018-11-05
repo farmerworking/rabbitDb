@@ -2,13 +2,12 @@ package com.farmerworking.db.rabbitDb.impl.harness.memtable;
 
 
 import com.farmerworking.db.rabbitDb.api.DBIterator;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.memtable.InternalKey;
 import com.farmerworking.db.rabbitDb.impl.memtable.MemtableIterator;
 import com.farmerworking.db.rabbitDb.impl.memtable.ValueType;
 
-public class KeyConvertingIterator implements DBIterator<Slice, Slice> {
+public class KeyConvertingIterator implements DBIterator<String, String> {
     private final MemtableIterator iter;
 
     public KeyConvertingIterator(MemtableIterator iter) {
@@ -46,19 +45,19 @@ public class KeyConvertingIterator implements DBIterator<Slice, Slice> {
     }
 
     @Override
-    public void seek(Slice key) {
+    public void seek(String key) {
         InternalKey seekKey = new InternalKey(key, Long.MAX_VALUE, ValueType.VALUE);
         iter.seek(seekKey);
     }
 
     @Override
-    public Slice key() {
+    public String key() {
         assert(isValid());
         return iter.key().getUserKey();
     }
 
     @Override
-    public Slice value() {
+    public String value() {
         return iter.value();
     }
 }

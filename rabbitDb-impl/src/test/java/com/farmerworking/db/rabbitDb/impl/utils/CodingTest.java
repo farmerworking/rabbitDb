@@ -1,6 +1,5 @@
 package com.farmerworking.db.rabbitDb.impl.utils;
 
-import com.farmerworking.db.rabbitDb.api.Slice;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
@@ -202,27 +201,27 @@ public class CodingTest {
     @Test
     public void testStrings() {
         StringBuilder builder = new StringBuilder();
-        Coding.putLengthPrefixedSlice(builder, new Slice(""));
-        Coding.putLengthPrefixedSlice(builder, new Slice("foo"));
-        Coding.putLengthPrefixedSlice(builder, new Slice("bar"));
-        Coding.putLengthPrefixedSlice(builder, new Slice(StringUtils.repeat("x", 200)));
+        Coding.putLengthPrefixedSlice(builder, "");
+        Coding.putLengthPrefixedSlice(builder, "foo");
+        Coding.putLengthPrefixedSlice(builder, "bar");
+        Coding.putLengthPrefixedSlice(builder, StringUtils.repeat("x", 200));
 
         String s = builder.toString();
-        Pair<Integer, Slice> result = Coding.decodeLengthPrefixedSlice(s.toCharArray(), 0);
+        Pair<Integer, String> result = Coding.decodeLengthPrefixedSlice(s.toCharArray(), 0);
         assertNotNull(result);
-        assertEquals("", result.getRight().toString());
+        assertEquals("", result.getRight());
 
         result = Coding.decodeLengthPrefixedSlice(s.toCharArray(), result.getLeft());
         assertNotNull(result);
-        assertEquals("foo", result.getRight().toString());
+        assertEquals("foo", result.getRight());
 
         result = Coding.decodeLengthPrefixedSlice(s.toCharArray(), result.getLeft());
         assertNotNull(result);
-        assertEquals("bar", result.getRight().toString());
+        assertEquals("bar", result.getRight());
 
         result = Coding.decodeLengthPrefixedSlice(s.toCharArray(), result.getLeft());
         assertNotNull(result);
-        assertEquals(StringUtils.repeat("x", 200), result.getRight().toString());
+        assertEquals(StringUtils.repeat("x", 200), result.getRight());
 
         assertEquals(result.getLeft().intValue(), s.length());
     }

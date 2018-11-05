@@ -1,20 +1,19 @@
 package com.farmerworking.db.rabbitDb.impl.writebatch;
 
-import com.farmerworking.db.rabbitDb.api.Slice;
 import lombok.Getter;
 
 class WriteBatchItem {
 
     private
     @Getter
-    Slice key;
-    private Slice value;
+    String key;
+    private String value;
 
-    WriteBatchItem(Slice key) {
+    WriteBatchItem(String key) {
         this.key = key;
     }
 
-    WriteBatchItem(Slice key, Slice value) {
+    WriteBatchItem(String key, String value) {
         this.key = key;
         this.value = value;
     }
@@ -23,7 +22,7 @@ class WriteBatchItem {
         return value == null;
     }
 
-    public Slice getValue() {
+    public String getValue() {
         assert !isDelete();
         return value;
     }

@@ -3,7 +3,6 @@ package com.farmerworking.db.rabbitDb.impl.sstable;
 import com.farmerworking.db.rabbitDb.api.CompressionType;
 import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.api.Status;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.file.WritableFile;
 import com.farmerworking.db.rabbitDb.impl.utils.Coding;
 import com.farmerworking.db.rabbitDb.impl.utils.Crc32C;
@@ -60,20 +59,20 @@ public class TableBuilder {
     // Add key,value to the table being constructed.
     // REQUIRES: key is after any previously added key according to comparator.
     // REQUIRES: finish(), abandon() have not been called
-    public void add(Slice key, Slice value) {
+    public void add(String key, String value) {
         assert !this.closed;
         if (this.status.isNotOk()) { return; }
-        if (numEntries > 0) assert this.options.comparator().compare(key.getData(), lastKey.toCharArray()) > 0;
+        if (numEntries > 0) assert this.options.comparator().compare(key, lastKey) > 0;
 
         if (pendingIndexEntry) {
             pendingIndex(key);
         }
 
-        this.lastKey = key.toString();
+        this.lastKey = key;
         dataBlockBuilder.add(key, value);
         numEntries ++;
         if (this.filterBlockBuilder != null) {
-            this.filterBlockBuilder.addKey(new Slice(this.lastKey));
+            this.filterBlockBuilder.addKey(this.lastKey);
         }
 
         if (dataBlockBuilder.currentSizeEstimate() >= options.blockSize()) {
@@ -103,7 +102,7 @@ public class TableBuilder {
 
         // filter
         if (this.status.isOk() && this.filterBlockBuilder != null) {
-            Slice filterContent = this.filterBlockBuilder.finish();
+            String filterContent = this.filterBlockBuilder.finish();
             writeRawBlock(filterContent, CompressionType.NONE.persistentId(), filterBlockHandle);
         }
 
@@ -112,7 +111,7 @@ public class TableBuilder {
             if (this.filterBlockBuilder != null) {
                 StringBuilder s = new StringBuilder();
                 filterBlockHandle.encodeTo(s);
-                metaIndexBuilder.add(new Slice("filter." + this.options.filterPolicy().name()), new Slice(s.toString()));
+                metaIndexBuilder.add("filter." + this.options.filterPolicy().name(), s.toString());
             }
 
             writeBlock(metaIndexBuilder, metaIndexHandle);
@@ -134,7 +133,7 @@ public class TableBuilder {
             footer.encodeTo(builder);
 
             String footerContent = builder.toString();
-            this.status = file.append(new Slice(footerContent));
+            this.status = file.append(footerContent);
             if (status.isOk()) {
                 fileOffset += footerContent.length();
             }
@@ -187,37 +186,37 @@ public class TableBuilder {
         return fileOffset;
     }
 
-    private void pendingIndex(Slice key) {
+    private void pendingIndex(String key) {
         assert this.dataBlockBuilder.isEmpty();
         String indexKey;
         if (key == null) {
-            indexKey = new String(this.options.comparator().findShortSuccessor(lastKey.toCharArray()));
+            indexKey = this.options.comparator().findShortSuccessor(lastKey);
         } else {
-            indexKey = new String(this.options.comparator().findShortestSeparator(lastKey.toCharArray(), key.getData()));
+            indexKey = this.options.comparator().findShortestSeparator(lastKey, key);
         }
 
         StringBuilder builder = new StringBuilder();
         pendingBlockHandle.encodeTo(builder);
 
-        indexBlockBuilder.add(new Slice(indexKey), new Slice(builder.toString()));
+        indexBlockBuilder.add(indexKey, builder.toString());
         pendingIndexEntry = false;
     }
 
     private void writeBlock(BlockBuilder builder, BlockHandle handle) {
-        Slice blockContent = builder.finish();
+        String blockContent = builder.finish();
         int type = CompressionType.NONE.persistentId();
 
         if (this.options.compressionType().equals(CompressionType.SNAPPY)) {
-            Slice compressContent = null;
+            String compressContent = null;
 
             try {
-                compressContent = new Slice(new String(snappyWrapper.compress(blockContent.toString()), "ISO-8859-1"));
+                compressContent = new String(snappyWrapper.compress(blockContent), "ISO-8859-1");
             } catch (Exception e) {
                 // fallback to no compression
             }
 
             if (compressContent != null && (test ||
-                    compressContent.getSize() < blockContent.getSize() - (blockContent.getSize() / 8))) {
+                    compressContent.length() < blockContent.length() - (blockContent.length() / 8))) {
                 blockContent = compressContent;
                 type = CompressionType.SNAPPY.persistentId();
             }
@@ -227,24 +226,24 @@ public class TableBuilder {
         builder.reset();
     }
 
-    private void writeRawBlock(Slice blockContent, int type, BlockHandle blockHandle) {
+    private void writeRawBlock(String blockContent, int type, BlockHandle blockHandle) {
         blockHandle.setOffset(fileOffset);
-        blockHandle.setSize(blockContent.getSize());
+        blockHandle.setSize(blockContent.length());
         status = file.append(blockContent);
 
         if (status.isOk()) {
             StringBuilder builder = new StringBuilder();
             builder.append((char) type);
 
-            int crc = Crc32C.value(blockContent.toString());
+            int crc = Crc32C.value(blockContent);
             crc = Crc32C.extend(crc, builder.toString());
             int mask = Crc32C.mask(crc);
 
             Coding.putFixed32(builder, mask);
-            status = file.append(new Slice(builder.toString()));
+            status = file.append(builder.toString());
 
             if (status.isOk()) {
-                fileOffset += blockContent.getSize() + BLOCK_TRAILER_SIZE;
+                fileOffset += blockContent.length() + BLOCK_TRAILER_SIZE;
             }
         }
     }

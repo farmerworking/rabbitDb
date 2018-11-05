@@ -1,7 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl.utils;
 
 import com.farmerworking.db.rabbitDb.api.Status;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.file.WritableFile;
 
 public class StringSink implements WritableFile {
@@ -12,8 +11,8 @@ public class StringSink implements WritableFile {
     }
 
     @Override
-    public Status append(Slice data) {
-        content.append(data.toString());
+    public Status append(String data) {
+        content.append(data);
         return Status.ok();
     }
 

@@ -3,7 +3,6 @@ package com.farmerworking.db.rabbitDb.impl.harness.memtable;
 import com.farmerworking.db.rabbitDb.api.DBComparator;
 import com.farmerworking.db.rabbitDb.api.DBIterator;
 import com.farmerworking.db.rabbitDb.api.Options;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.SequenceGenerator;
 import com.farmerworking.db.rabbitDb.impl.harness.Constructor;
@@ -26,7 +25,7 @@ public class MemTableConstructor extends Constructor {
 
         int seq = 1;
         for(String key : keys) {
-            memtable.add(new InternalKey(new Slice(key), seq, ValueType.VALUE), new Slice(data.get(key)));
+            memtable.add(new InternalKey(key, seq, ValueType.VALUE), data.get(key));
             seq ++;
         }
         return Status.ok();
@@ -43,7 +42,7 @@ public class MemTableConstructor extends Constructor {
     }
 
     @Override
-    public Slice get(Slice key) {
+    public String get(String key) {
         return memtable.get(new InternalKey(key, SequenceGenerator.last(), null));
     }
 }

@@ -3,9 +3,9 @@ package com.farmerworking.db.rabbitDb.api;
 import java.util.List;
 
 public interface FilterPolicy {
-    String createFilter(List<Slice> keys);
+    String createFilter(List<String> keys);
 
-    boolean keyMayMatch(Slice key, Slice filter);
+    boolean keyMayMatch(String key, String filter);
 
     String name();
 }

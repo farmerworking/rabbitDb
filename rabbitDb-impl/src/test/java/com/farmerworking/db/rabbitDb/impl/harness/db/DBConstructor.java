@@ -4,7 +4,6 @@ import com.farmerworking.db.rabbitDb.api.DBComparator;
 import com.farmerworking.db.rabbitDb.api.DBIterator;
 import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.impl.DbImpl;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.harness.Constructor;
 
@@ -22,7 +21,7 @@ public class DBConstructor extends Constructor {
         this.db = new DbImpl(options);
 
         for(String key : keys) {
-            db.put(new Slice(key), new Slice(data.get(key)));
+            db.put(key, data.get(key));
         }
 
         return Status.ok();
@@ -39,7 +38,7 @@ public class DBConstructor extends Constructor {
     }
 
     @Override
-    public Slice get(Slice key) {
+    public String get(String key) {
         return db.get(key);
     }
 }

@@ -1,7 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl.sstable;
 
 import com.farmerworking.db.rabbitDb.api.*;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.SequenceGenerator;
 import com.farmerworking.db.rabbitDb.impl.SnapshotImpl;
 import com.farmerworking.db.rabbitDb.impl.harness.Constructor;
@@ -28,7 +27,7 @@ public class TableConstructor extends Constructor {
         builder.setTest(true);
 
         for(String key : keys) {
-            builder.add(new Slice(key), new Slice(data.get(key)));
+            builder.add(key, data.get(key));
             assertTrue(builder.status().isOk());
         }
         Status status = builder.finish();
@@ -55,11 +54,11 @@ public class TableConstructor extends Constructor {
     }
 
     @Override
-    public Slice get(Slice key) {
+    public String get(String key) {
         ReadOptions readOptions = new ReadOptions();
         readOptions.verifyChecksums(true);
         readOptions.snapshot(new SnapshotImpl(SequenceGenerator.last()));
-        Pair<Status, Slice> pair = table.get(readOptions, key);
+        Pair<Status, String> pair = table.get(readOptions, key);
         assert pair.getLeft().isOk();
         return pair.getRight();
     }

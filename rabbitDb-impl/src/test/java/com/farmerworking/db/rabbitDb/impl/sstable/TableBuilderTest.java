@@ -4,7 +4,6 @@ import com.farmerworking.db.rabbitDb.api.CompressionType;
 import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.utils.Coding;
 import com.farmerworking.db.rabbitDb.impl.utils.ErrorSnappy;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSink;
@@ -37,7 +36,7 @@ public class TableBuilderTest {
     @Test(expected = AssertionError.class)
     public void testAbandon1() throws Exception {
         builder.abandon();
-        builder.add(new Slice(""), new Slice(""));
+        builder.add("", "");
     }
 
     @Test(expected = AssertionError.class)
@@ -65,16 +64,16 @@ public class TableBuilderTest {
 
     @Test
     public void testNumEntries1() throws Exception {
-        builder.add(new Slice(""), new Slice(""));
-        builder.add(new Slice("a"), new Slice(""));
+        builder.add("", "");
+        builder.add("a", "");
         assertEquals(2, builder.numEntries());
     }
 
     @Test
     public void testFileSize() throws Exception {
         assertEquals(0, builder.fileSize());
-        builder.add(new Slice(""), new Slice(""));
-        builder.add(new Slice("a"), new Slice(""));
+        builder.add("", "");
+        builder.add("a", "");
         assertEquals(0, builder.fileSize());
         builder.flush();
         long flushFileSize = builder.fileSize();
@@ -87,8 +86,8 @@ public class TableBuilderTest {
 
     @Test
     public void testFlushSkipIfEmpty() throws Exception {
-        builder.add(new Slice(""), new Slice(""));
-        builder.add(new Slice("a"), new Slice(""));
+        builder.add("", "");
+        builder.add("a", "");
         builder.flush();
         long flushFileSize = builder.fileSize();
         builder.flush();
@@ -104,7 +103,7 @@ public class TableBuilderTest {
     @Test(expected = AssertionError.class)
     public void testFinish1() throws Exception {
         builder.finish();
-        builder.add(new Slice(""), new Slice(""));
+        builder.add("", "");
     }
 
     @Test(expected = AssertionError.class)
@@ -127,30 +126,30 @@ public class TableBuilderTest {
 
     @Test(expected = AssertionError.class)
     public void testAdd() throws Exception {
-        builder.add(new Slice("b"), new Slice(""));
-        builder.add(new Slice("a"), new Slice(""));
+        builder.add("b", "");
+        builder.add("a", "");
     }
 
     @Test
     public void testBadStatusAdd() throws Exception {
-        builder.add(new Slice(""), new Slice(""));
+        builder.add("", "");
         assertEquals(1, builder.numEntries());
         builder.setStatus(Status.corruption("bad status"));
         assertTrue(builder.status().isNotOk());
 
-        builder.add(new Slice("a"), new Slice(""));
+        builder.add("a", "");
         assertEquals(1, builder.numEntries());
     }
 
     @Test
     public void testBadStatusFlush() throws Exception {
-        builder.add(new Slice(""), new Slice(""));
+        builder.add("", "");
         builder.flush();
         int originLength = file.getContent().length();
         assertEquals(file.getContent().length(), builder.fileSize());
         assertEquals(1, builder.numEntries());
 
-        builder.add(new Slice("a"), new Slice(""));
+        builder.add("a", "");
         builder.setStatus(Status.corruption("bad status"));
         assertTrue(builder.status().isNotOk());
         builder.flush();
@@ -162,8 +161,8 @@ public class TableBuilderTest {
 
     @Test
     public void testBadStatusFinish() throws Exception {
-        builder.add(new Slice(""), new Slice(""));
-        builder.add(new Slice("a"), new Slice(""));
+        builder.add("", "");
+        builder.add("a", "");
         builder.setStatus(Status.corruption("bad status"));
         Status status = builder.finish();
         assertTrue(status.isNotOk());
@@ -176,14 +175,14 @@ public class TableBuilderTest {
         options.compressionType(CompressionType.SNAPPY);
         builder.setTest(true);
 
-        builder.add(new Slice("a"), new Slice("b"));
+        builder.add("a", "b");
         builder.flush();
 
         String content = file.getContent();
         assertEquals((char)CompressionType.SNAPPY.persistentId(), content.charAt(content.length() - Coding.FIXED_32_UNIT - 1));
 
         builder.setSnappyWrapper(new ErrorSnappy());
-        builder.add(new Slice("c"), new Slice("d"));
+        builder.add("c", "d");
         builder.flush();
 
         content = file.getContent();

@@ -2,7 +2,6 @@ package com.farmerworking.db.rabbitDb.impl.sstable;
 
 import com.farmerworking.db.rabbitDb.api.DBComparator;
 import com.farmerworking.db.rabbitDb.impl.utils.Coding;
-import com.farmerworking.db.rabbitDb.api.Slice;
 
 import java.util.ArrayList;
 
@@ -33,16 +32,16 @@ public class BlockBuilder {
         return buffer.length() == 0;
     }
 
-    public void add(Slice key, Slice value) {
+    public void add(String key, String value) {
         assert !finished;
         assert counter <= this.blockRestartInterval;
-        assert isEmpty() || this.comparator.compare(key.getData(), lastKey.toCharArray()) > 0;
+        assert isEmpty() || this.comparator.compare(key, lastKey) > 0;
 
         int shared = 0;
         if (counter < this.blockRestartInterval) {
-            while (shared < key.getSize() &&
+            while (shared < key.length() &&
                     shared < lastKey.length() &&
-                    lastKey.charAt(shared) == key.get(shared)) {
+                    lastKey.charAt(shared) == key.charAt(shared)) {
                 shared++;
             }
         } else {
@@ -50,26 +49,25 @@ public class BlockBuilder {
             counter = 0;
         }
 
-        lastKey = key.toString();
+        lastKey = key;
         counter++;
 
         Coding.putVariant32(buffer, shared);
-        Coding.putVariant32(buffer, key.getSize() - shared);
-        Coding.putVariant32(buffer, value.getSize());
+        Coding.putVariant32(buffer, key.length() - shared);
+        Coding.putVariant32(buffer, value.length());
 
-        key.removePrefix(shared);
-        buffer.append(key.getData());
-        buffer.append(value.getData());
+        buffer.append(key.substring(shared, key.length()));
+        buffer.append(value);
     }
 
-    public Slice finish() {
+    public String finish() {
         finished = true;
 
         for (Integer offset : restarts) {
             Coding.putFixed32(buffer, offset);
         }
         Coding.putFixed32(buffer, restarts.size());
-        return new Slice(buffer.toString());
+        return buffer.toString();
     }
 
     public void reset() {

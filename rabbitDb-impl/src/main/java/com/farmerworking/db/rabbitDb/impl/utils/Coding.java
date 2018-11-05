@@ -1,6 +1,5 @@
 package com.farmerworking.db.rabbitDb.impl.utils;
 
-import com.farmerworking.db.rabbitDb.api.Slice;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class Coding {
@@ -113,7 +112,7 @@ public class Coding {
         return length;
     }
 
-    public static Pair<Integer, Slice> decodeLengthPrefixedSlice(char[] buf, int offset) {
+    public static Pair<Integer, String> decodeLengthPrefixedSlice(char[] buf, int offset) {
         Pair<Integer, Integer> decodeResult = decodeVariant32(buf, offset);
         if (decodeResult == null) {
             return null;
@@ -125,14 +124,14 @@ public class Coding {
                 return null;
             } else {
                 return Pair.of(decodeResult.getLeft() + length,
-                        new Slice(buf, length, decodeResult.getLeft()));
+                        new String(buf, decodeResult.getLeft(), length));
             }
         }
     }
 
-    public static void putLengthPrefixedSlice(StringBuilder builder, Slice value) {
-        putVariant32(builder, value.getSize());
-        builder.append(value.getData());
+    public static void putLengthPrefixedSlice(StringBuilder builder, String value) {
+        putVariant32(builder, value.length());
+        builder.append(value.toCharArray());
     }
 
     public static int detectVariantLength(Long value) {

@@ -1,6 +1,5 @@
 package com.farmerworking.db.rabbitDb.impl.writebatch;
 
-import com.farmerworking.db.rabbitDb.api.Slice;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,14 +16,14 @@ public class WriteBatchImpl {
     @Setter
     Long sequence;
 
-    public WriteBatchImpl put(Slice key, Slice value) {
+    public WriteBatchImpl put(String key, String value) {
         requireNonNull(key, "key is null");
         requireNonNull(value, "value is null");
         updateList.add(new WriteBatchItem(key, value));
         return this;
     }
 
-    public WriteBatchImpl delete(Slice key) {
+    public WriteBatchImpl delete(String key) {
         requireNonNull(key, "key is null");
         updateList.add(new WriteBatchItem(key));
         return this;
@@ -42,8 +41,8 @@ public class WriteBatchImpl {
     public int approximateSize() {
         return updateList.stream().mapToInt(
                 item -> item.isDelete() ?
-                        item.getKey().getSize() :
-                        item.getKey().getSize() + item.getValue().getSize()).sum();
+                        item.getKey().length() :
+                        item.getKey().length() + item.getValue().length()).sum();
     }
 
     public void iterate(WriteBatchIterateHandler handler) {

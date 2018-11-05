@@ -1,7 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl.sstable;
 
 import com.farmerworking.db.rabbitDb.impl.utils.Coding;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.api.Status;
 import lombok.Data;
 import org.apache.commons.lang3.tuple.Pair;
@@ -25,8 +24,8 @@ public class BlockHandle {
         Coding.putVariant64(stringBuilder, size);
     }
 
-    public Pair<Status, Integer> decodeFrom(Slice slice) {
-        char[] data = slice.getData();
+    public Pair<Status, Integer> decodeFrom(String slice) {
+        char[] data = slice.toCharArray();
         Pair<Integer, Long> pair = Coding.decodeVariant64(data, 0);
         if (pair == null) {
             return Pair.of(Status.corruption("bad block handle"), 0);

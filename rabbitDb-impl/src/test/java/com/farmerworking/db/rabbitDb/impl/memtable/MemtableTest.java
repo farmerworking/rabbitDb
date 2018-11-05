@@ -1,7 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl.memtable;
 
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -91,15 +90,15 @@ public class MemtableTest {
 
         assertFalse(iter.isValid());
 
-        iter.seek(new InternalKey(new Slice("four"), 100, null));
+        iter.seek(new InternalKey("four", 100, null));
         assertTrue(iter.isValid());
         assertVariousAndNext(iter, "one", 106, ValueType.DELETE, null);
 
-        iter.seek(new InternalKey(new Slice("one"), 110, null));
+        iter.seek(new InternalKey("one", 110, null));
         assertTrue(iter.isValid());
         assertVariousAndNext(iter, "one", 106, ValueType.DELETE, null);
 
-        iter.seek(new InternalKey(new Slice("x"), 1000, null));
+        iter.seek(new InternalKey("x", 1000, null));
         assertFalse(iter.isValid());
     }
 
@@ -122,29 +121,29 @@ public class MemtableTest {
     }
 
     private String get(long sequence, String key) {
-        Slice value = memtable.get(new InternalKey(new Slice(key), sequence, null));
-        return value == null ? null : value.toString();
+        String value = memtable.get(new InternalKey(key, sequence, null));
+        return value == null ? null : value;
     }
 
     private void put(long sequence, String key, String value) {
-        memtable.add(new InternalKey(new Slice(key), sequence, ValueType.VALUE), new Slice(value));
+        memtable.add(new InternalKey(key, sequence, ValueType.VALUE), value);
     }
 
     private void delete(long sequence, String key) {
-        memtable.add(new InternalKey(new Slice(key), sequence, ValueType.DELETE), new Slice());
+        memtable.add(new InternalKey(key, sequence, ValueType.DELETE), "");
     }
 
     private void assertVariousAndNext(MemtableIterator iterator, String userKey, long sequence,
                                       ValueType type, String value) {
         InternalKey internalKey = iterator.key();
-        Slice returnValue = iterator.value();
+        String returnValue = iterator.value();
 
-        assertEquals(userKey, internalKey.getUserKey().toString());
+        assertEquals(userKey, internalKey.getUserKey());
         assertEquals(sequence, internalKey.getSequence());
         assertEquals(type, internalKey.getValueType());
 
         if (type == ValueType.VALUE) {
-            assertEquals(value, returnValue.toString());
+            assertEquals(value, returnValue);
         }
 
         iterator.next();

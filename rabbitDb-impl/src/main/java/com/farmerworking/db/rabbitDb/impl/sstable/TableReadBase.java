@@ -22,7 +22,7 @@ public class TableReadBase {
         return true;
     }
 
-    static Pair<Status, Block> readBlock(RandomAccessFile file, ReadOptions readOptions, Slice blockHandleContent) {
+    static Pair<Status, Block> readBlock(RandomAccessFile file, ReadOptions readOptions, String blockHandleContent) {
         BlockHandle blockHandle = new BlockHandle();
         Pair<Status, Integer> pair = blockHandle.decodeFrom(blockHandleContent);
         Status status = pair.getLeft();
@@ -34,7 +34,7 @@ public class TableReadBase {
         }
     }
 
-    protected static DBIterator<Slice, Slice> readDataBlock(RandomAccessFile file, ReadOptions readOptions, DBComparator comparator, Slice blockHandleContent) {
+    protected static DBIterator<String, String> readDataBlock(RandomAccessFile file, ReadOptions readOptions, DBComparator comparator, String blockHandleContent) {
         Pair<Status, Block> pair = readBlock(file, readOptions, blockHandleContent);
         if (pair.getLeft().isOk()) {
             return pair.getRight().iterator(comparator);
@@ -43,7 +43,7 @@ public class TableReadBase {
         }
     }
 
-    protected static DBIterator<Slice, Slice> readDataBlock(RandomAccessFile file, ReadOptions readOptions, DBComparator comparator, BlockHandle blockHandle) {
+    protected static DBIterator<String, String> readDataBlock(RandomAccessFile file, ReadOptions readOptions, DBComparator comparator, BlockHandle blockHandle) {
         Pair<Status, Block> pair = readBlock(file, readOptions, blockHandle);
         if (pair.getLeft().isOk()) {
             return pair.getRight().iterator(comparator);
@@ -58,12 +58,12 @@ public class TableReadBase {
     }
 
     static Pair<Status, Block> readBlock(RandomAccessFile file, ReadOptions readOptions, BlockHandle blockHandle, SnappyWrapper snappyWrapper) {
-        Pair<Status, Slice> readResult = file.read(blockHandle.getOffset(), blockHandle.getSize() + TableBuilder.BLOCK_TRAILER_SIZE);
+        Pair<Status, String> readResult = file.read(blockHandle.getOffset(), blockHandle.getSize() + TableBuilder.BLOCK_TRAILER_SIZE);
         Status status = readResult.getLeft();
         Block block = null;
 
         if (status.isOk()) {
-            char[] content = readResult.getRight().getData();
+            char[] content = readResult.getRight().toCharArray();
 
             if (content.length != blockHandle.getSize() + TableBuilder.BLOCK_TRAILER_SIZE) {
                 return Pair.of(Status.corruption("truncated block read"), null);
@@ -74,13 +74,12 @@ public class TableReadBase {
             } else {
                 if ((int)content[(int)blockHandle.getSize()] == CompressionType.SNAPPY.persistentId()) {
                     try {
-                        block = new Block(new Slice(
-                                snappyWrapper.uncompress(new String(content, 0, (int)blockHandle.getSize()).getBytes("ISO-8859-1"))));
+                        block = new Block(snappyWrapper.uncompress(new String(content, 0, (int)blockHandle.getSize()).getBytes("ISO-8859-1")));
                     } catch (Exception e) {
                         status = Status.corruption("corrupted compressed block contents");
                     }
                 } else {
-                    block = new Block(new Slice(content, (int)blockHandle.getSize()));
+                    block = new Block(new String(content, 0, (int)blockHandle.getSize()));
                 }
             }
         }

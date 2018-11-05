@@ -22,17 +22,17 @@ public class DbImpl {
         this.memtable = new Memtable(this.comparator);
     }
 
-    public Slice get(Slice key) throws DBException {
+    public String get(String key) throws DBException {
         return get(key, getDefaultReadOptions());
     }
 
-    public Snapshot put(Slice key, Slice value) throws DBException {
+    public Snapshot put(String key, String value) throws DBException {
         WriteBatchImpl writeBatch = createWriteBatch();
         writeBatch.put(key, value);
         return write(writeBatch);
     }
 
-    public Snapshot delete(Slice key) throws DBException {
+    public Snapshot delete(String key) throws DBException {
         WriteBatchImpl writeBatch = createWriteBatch();
         writeBatch.delete(key);
         return write(writeBatch);
@@ -59,7 +59,7 @@ public class DbImpl {
         }
     }
 
-    public Slice get(Slice key, ReadOptions options) throws DBException {
+    public String get(String key, ReadOptions options) throws DBException {
         long sequence = ((SnapshotImpl) options.snapshot()).getSequence();
         return memtable.get(new InternalKey(key, sequence, null));
     }

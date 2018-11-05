@@ -1,7 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl;
 
 import com.farmerworking.db.rabbitDb.api.FilterPolicy;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.utils.Coding;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,46 +15,34 @@ import static org.junit.Assert.*;
 public class BloomFilterPolicyTest {
     class BloomTest {
         private FilterPolicy policy;
-        private Slice filter;
-        private Vector<Slice> keys;
+        private String filter;
+        private Vector<String> keys;
 
         public BloomTest() {
             this.policy = new BloomFilterPolicy(10);
             this.keys = new Vector<>();
-            this.filter = new Slice();
+            this.filter = "";
         }
 
         public void reset() {
             keys.clear();
-            this.filter = new Slice();
+            this.filter = "";
         }
 
         public void add(String key) {
-            keys.add(new Slice(key));
-        }
-
-        public void add(Slice key) {
             keys.add(key);
         }
 
         public void build() {
-            filter = new Slice(policy.createFilter(keys));
+            filter = policy.createFilter(keys);
             keys.clear();
         }
 
         public int filterSize() {
-            return filter.getSize();
+            return filter.length();
         }
 
         public boolean matches(String key) {
-            if (!keys.isEmpty()) {
-                build();
-            }
-
-            return policy.keyMayMatch(new Slice(key), this.filter);
-        }
-
-        public boolean matches(Slice key) {
             if (!keys.isEmpty()) {
                 build();
             }
@@ -144,9 +131,9 @@ public class BloomFilterPolicyTest {
         return length;
     }
 
-    private Slice key(int i) {
+    private String key(int i) {
         char[] buffer = new char[4];
         Coding.encodeFixed32(buffer, 0, i);
-        return new Slice(buffer);
+        return new String(buffer);
     }
 }

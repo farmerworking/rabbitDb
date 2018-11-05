@@ -2,7 +2,6 @@ package com.farmerworking.db.rabbitDb.impl.sstable;
 
 import com.farmerworking.db.rabbitDb.api.FilterPolicy;
 import com.farmerworking.db.rabbitDb.impl.utils.Coding;
-import com.farmerworking.db.rabbitDb.api.Slice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,7 @@ public class FilterBlockBuilder extends FilterBlockBase{
     private final FilterPolicy filterPolicy;
 
     private Vector<Integer> filterOffsets;
-    private List<Slice> keys;
+    private List<String> keys;
     private StringBuilder result;
 
     public FilterBlockBuilder(FilterPolicy filterPolicy) {
@@ -43,11 +42,11 @@ public class FilterBlockBuilder extends FilterBlockBase{
         }
     }
 
-    public void addKey(Slice key) {
+    public void addKey(String key) {
         this.keys.add(key);
     }
 
-    public Slice finish() {
+    public String finish() {
         if (!this.keys.isEmpty()) {
             generateFilter();
         }
@@ -58,6 +57,6 @@ public class FilterBlockBuilder extends FilterBlockBase{
         }
         Coding.putFixed32(result, filterOffsetsArrayOffset);
         result.append((char)baseLg);
-        return new Slice(result.toString());
+        return result.toString();
     }
 }

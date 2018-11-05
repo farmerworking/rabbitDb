@@ -1,6 +1,5 @@
 package com.farmerworking.db.rabbitDb.impl.sstable;
 
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.utils.Coding;
 import org.apache.commons.lang3.tuple.Pair;
@@ -23,7 +22,7 @@ public class BlockHandleTest {
         assertEquals(another.getOffset(), 0l);
         assertEquals(another.getSize(), 0l);
 
-        Pair<Status, Integer> pair = another.decodeFrom(new Slice(stringBuilder.toString()));
+        Pair<Status, Integer> pair = another.decodeFrom(stringBuilder.toString());
         assertTrue(pair.getLeft().isOk());
         assertEquals(another.getOffset(), 111l);
         assertEquals(another.getSize(), 100l);

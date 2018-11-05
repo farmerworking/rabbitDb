@@ -41,7 +41,7 @@ public abstract class Constructor {
 
     public abstract boolean suppportGet() ;
 
-    public abstract Slice get(Slice key) ;
+    public abstract String get(String key) ;
 
     public Map<String, String> data() {
         return data;

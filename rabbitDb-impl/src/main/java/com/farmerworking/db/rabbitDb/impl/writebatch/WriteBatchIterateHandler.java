@@ -1,12 +1,10 @@
 package com.farmerworking.db.rabbitDb.impl.writebatch;
 
-import com.farmerworking.db.rabbitDb.api.Slice;
-
 public interface WriteBatchIterateHandler {
 
-    void put(Slice key, Slice value);
+    void put(String key, String value);
 
-    void delete(Slice key);
+    void delete(String key);
 
     void setSequence(long sequence);
 }

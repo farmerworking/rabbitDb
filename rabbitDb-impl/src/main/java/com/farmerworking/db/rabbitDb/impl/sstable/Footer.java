@@ -1,7 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl.sstable;
 
 import com.farmerworking.db.rabbitDb.impl.utils.Coding;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.api.Status;
 import lombok.Data;
 import org.apache.commons.lang3.tuple.Pair;
@@ -36,13 +35,13 @@ public class Footer {
         assert stringBuilder.length() == originLength + ENCODE_LENGTH;
     }
 
-    public Status decodeFrom(Slice slice) {
-        if (slice.getSize() < ENCODE_LENGTH) {
+    public Status decodeFrom(String slice) {
+        if (slice.length() < ENCODE_LENGTH) {
             return Status.corruption("bad footer");
         }
 
-        char[] data = slice.getData();
-        int magicOffset = slice.getSize() - 2 * Coding.FIXED_32_UNIT;
+        char[] data = slice.toCharArray();
+        int magicOffset = slice.length() - 2 * Coding.FIXED_32_UNIT;
         Integer magicLo = Coding.decodeFixed32(data, magicOffset).getRight();
         Integer magicHi = Coding.decodeFixed32(data, magicOffset + Coding.FIXED_32_UNIT).getRight();
 
@@ -55,7 +54,7 @@ public class Footer {
         Pair<Status, Integer> pair = metaIndexHandle.decodeFrom(slice);
         if (pair.getLeft().isOk()) {
             this.indexHandle = new BlockHandle();
-            pair = indexHandle.decodeFrom(new Slice(data, data.length - pair.getRight(), pair.getRight()));
+            pair = indexHandle.decodeFrom(new String(data, pair.getRight(), data.length - pair.getRight()));
         }
 
         return pair.getLeft();

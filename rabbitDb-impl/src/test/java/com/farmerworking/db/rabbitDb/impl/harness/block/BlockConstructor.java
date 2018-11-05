@@ -3,7 +3,6 @@ package com.farmerworking.db.rabbitDb.impl.harness.block;
 import com.farmerworking.db.rabbitDb.api.DBComparator;
 import com.farmerworking.db.rabbitDb.api.DBIterator;
 import com.farmerworking.db.rabbitDb.api.Options;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.harness.Constructor;
 import com.farmerworking.db.rabbitDb.impl.sstable.Block;
@@ -24,10 +23,10 @@ public class BlockConstructor extends Constructor {
         BlockBuilder blockBuilder = new BlockBuilder(options.blockRestartInterval(), options.comparator());
 
         for(String key : keys) {
-            blockBuilder.add(new Slice(key), new Slice(data.get(key)));
+            blockBuilder.add(key, data.get(key));
         }
 
-        Slice blockContent = blockBuilder.finish();
+        String blockContent = blockBuilder.finish();
         this.block = new Block(blockContent);
         return Status.ok();
     }
@@ -43,7 +42,7 @@ public class BlockConstructor extends Constructor {
     }
 
     @Override
-    public Slice get(Slice key) {
+    public String get(String key) {
         throw new NotImplementedException();
     }
 }

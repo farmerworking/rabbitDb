@@ -7,7 +7,6 @@ import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
 import com.farmerworking.db.rabbitDb.impl.EmptyIterator;
 import com.farmerworking.db.rabbitDb.impl.ErrorIterator;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSink;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSource;
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,8 +29,8 @@ public class TableIteratorTest {
 
     @Test
     public void testCorruptionIndexBlock() throws Exception {
-        Block block = new Block(new Slice());
-        DBIterator<Slice, Slice> iter = block.iterator(options.comparator());
+        Block block = new Block("");
+        DBIterator<String, String> iter = block.iterator(options.comparator());
         assertTrue(iter.getStatus().isCorruption());
 
         TableIterator tableIterator = new TableIterator(iter, new ReadOptions(), new StringSource(""), options.comparator());
@@ -62,13 +61,13 @@ public class TableIteratorTest {
 
         iter.seekToFirst();
         assertTrue(iter.isValid());
-        assertEquals("a", iter.key().toString());
-        assertEquals("b", iter.value().toString());
+        assertEquals("a", iter.key());
+        assertEquals("b", iter.value());
 
         iter.next();
         assertTrue(iter.isValid());
-        assertEquals("b", iter.key().toString());
-        assertEquals("c", iter.value().toString());
+        assertEquals("b", iter.key());
+        assertEquals("c", iter.value());
 
         iter.next();
         assertFalse(iter.isValid());
@@ -85,8 +84,8 @@ public class TableIteratorTest {
 
         iter.seekToFirst();
         assertTrue(iter.isValid());
-        assertEquals("a", iter.key().toString());
-        assertEquals("b", iter.value().toString());
+        assertEquals("a", iter.key());
+        assertEquals("b", iter.value());
 
         iter.next();
         assertFalse(iter.isValid());
@@ -97,9 +96,9 @@ public class TableIteratorTest {
     private Pair<Status, Table> prepareDataBlockChecksumMissmatchCase() {
         StringSink target = new StringSink();
         TableBuilder builder = new TableBuilder(options, target);
-        builder.add(new Slice("a"), new Slice("b"));
+        builder.add("a", "b");
         builder.flush();
-        builder.add(new Slice("b"), new Slice("c"));
+        builder.add("b", "c");
         Status status = builder.finish();
         assertTrue(status.isOk());
 

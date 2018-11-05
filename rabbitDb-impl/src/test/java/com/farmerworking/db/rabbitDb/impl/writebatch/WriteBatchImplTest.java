@@ -1,7 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl.writebatch;
 
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.memtable.InternalKey;
 import com.farmerworking.db.rabbitDb.impl.memtable.Memtable;
 import com.farmerworking.db.rabbitDb.impl.memtable.MemtableIterator;
@@ -82,16 +81,16 @@ public class WriteBatchImplTest {
         writeBatch.append(b2);
 
         assertEquals("", printContents());
-        b2.put(new Slice("a"), new Slice("va"));
+        b2.put("a", "va");
         writeBatch.append(b2);
         assertEquals("Put(a, va)@200", printContents());
 
         b2.clear();
-        b2.put(new Slice("b"), new Slice("vb"));
+        b2.put("b", "vb");
         writeBatch.append(b2);
         assertEquals("Put(a, va)@200" + "Put(b, vb)@201", printContents());
 
-        b2.delete(new Slice("foo"));
+        b2.delete("foo");
         writeBatch.append(b2);
         assertEquals("Put(a, va)@200" +
                 "Put(b, vb)@202" +
@@ -100,11 +99,11 @@ public class WriteBatchImplTest {
     }
 
     private void put(String key, String value) {
-        writeBatch.put(new Slice(key), new Slice(value));
+        writeBatch.put(key, value);
     }
 
     private void delete(String key) {
-        writeBatch.delete(new Slice(key));
+        writeBatch.delete(key);
     }
 
     private void setSequence(Long sequence) {
@@ -121,10 +120,10 @@ public class WriteBatchImplTest {
             InternalKey entry = iter.key();
             if (entry.getValueType() == ValueType.DELETE) {
                 builder.append(String.format("Delete(%s)@%d",
-                        entry.getUserKey().toString(), entry.getSequence()));
+                        entry.getUserKey(), entry.getSequence()));
             } else {
                 builder.append(String.format("Put(%s, %s)@%d",
-                        entry.getUserKey().toString(), iter.value().toString(),
+                        entry.getUserKey(), iter.value(),
                         entry.getSequence()));
             }
         }

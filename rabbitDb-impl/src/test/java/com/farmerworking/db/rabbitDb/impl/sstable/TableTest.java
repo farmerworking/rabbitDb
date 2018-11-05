@@ -4,7 +4,6 @@ import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.BloomFilterPolicy;
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.utils.ErrorRandomAccessFile;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSink;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSource;
@@ -79,7 +78,7 @@ public class TableTest {
     @Test
     public void testEmptyMetaIndex() throws Exception {
         options.filterPolicy(new BloomFilterPolicy(10));
-        Table table = new Table(options, new Block(new Slice("")), new StringSource(""));
+        Table table = new Table(options, new Block(""), new StringSource(""));
 
         Footer footer = new Footer();
         footer.setMetaIndexHandle(new BlockHandle(1000, 0));
@@ -91,7 +90,7 @@ public class TableTest {
     @Test
     public void testMetaIndexReadBlockError() throws Exception {
         options.filterPolicy(new BloomFilterPolicy(10));
-        Table table = new Table(options, new Block(new Slice("")), new StringSource(""));
+        Table table = new Table(options, new Block(""), new StringSource(""));
 
         table.setFile(new ErrorRandomAccessFile());
         Footer footer = new Footer();
@@ -106,7 +105,7 @@ public class TableTest {
         options.filterPolicy(new BloomFilterPolicy(10));
         StringSink target = new StringSink();
         TableBuilder builder = new TableBuilder(options, target);
-        builder.add(new Slice("a"), new Slice("b"));
+        builder.add("a", "b");
         builder.finish();
 
         options.filterPolicy(new TestHashFilter());
@@ -120,7 +119,7 @@ public class TableTest {
         options.filterPolicy(new BloomFilterPolicy(10));
         StringSink target = new StringSink();
         TableBuilder builder = new TableBuilder(options, target);
-        builder.add(new Slice("a"), new Slice("b"));
+        builder.add("a", "b");
         builder.finish();
 
         options.filterPolicy(null);
@@ -129,7 +128,7 @@ public class TableTest {
         assertNull(pair.getRight().filter);
 
         Table table = pair.getRight();
-        table.readFilter(new Slice(""));
+        table.readFilter("");
         assertNull(pair.getRight().filter);
     }
 
@@ -138,7 +137,7 @@ public class TableTest {
         options.filterPolicy(new BloomFilterPolicy(10));
         StringSink target = new StringSink();
         TableBuilder builder = new TableBuilder(options, target);
-        builder.add(new Slice("a"), new Slice("b"));
+        builder.add("a", "b");
         builder.finish();
 
         options.filterPolicy(null);
@@ -151,7 +150,7 @@ public class TableTest {
         StringBuilder s = new StringBuilder();
         BlockHandle blockHandle = new BlockHandle(100, 100);
         blockHandle.encodeTo(s);
-        table.readFilter(new Slice(s.toString()));
+        table.readFilter(s.toString());
 
         assertNull(pair.getRight().filter);
     }
@@ -159,7 +158,7 @@ public class TableTest {
     private char[] prepareIndexBlockChecksumMissMatchCase() {
         StringSink target = new StringSink();
         TableBuilder builder = new TableBuilder(options, target);
-        builder.add(new Slice("a"), new Slice("b"));
+        builder.add("a", "b");
         Status status = builder.finish();
         assertTrue(status.isOk());
 

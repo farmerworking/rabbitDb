@@ -1,6 +1,5 @@
 package com.farmerworking.db.rabbitDb.impl.file;
 
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.api.Status;
 
 /**
@@ -10,7 +9,7 @@ import com.farmerworking.db.rabbitDb.api.Status;
 // must provide buffering since callers may append small fragments
 // at a time to the file.
 public interface WritableFile {
-    Status append(Slice data);
+    Status append(String data);
 
     Status close();
 

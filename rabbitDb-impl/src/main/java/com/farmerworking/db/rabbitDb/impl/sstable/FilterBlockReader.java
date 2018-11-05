@@ -2,7 +2,6 @@ package com.farmerworking.db.rabbitDb.impl.sstable;
 
 import com.farmerworking.db.rabbitDb.api.FilterPolicy;
 import com.farmerworking.db.rabbitDb.impl.utils.Coding;
-import com.farmerworking.db.rabbitDb.api.Slice;
 
 public class FilterBlockReader extends FilterBlockBase{
     private char[] data;
@@ -12,30 +11,30 @@ public class FilterBlockReader extends FilterBlockBase{
     private boolean malformed = false;
     private final FilterPolicy filterPolicy;
 
-    public FilterBlockReader(FilterPolicy filterPolicy, Slice content) {
+    public FilterBlockReader(FilterPolicy filterPolicy, String content) {
         this.filterPolicy = filterPolicy;
 
         // 1 byte for baseLg and 4 for start of offset array
-        if (content.getSize() < 5) {
+        if (content.length() < 5) {
             this.malformed = true;
             return;
         }
 
-        char[] data = content.getData();
-        Integer arrayOffset = Coding.decodeFixed32(data, content.getSize() - 5).getRight();
+        char[] data = content.toCharArray();
+        Integer arrayOffset = Coding.decodeFixed32(data, content.length() - 5).getRight();
 
-        if (arrayOffset > content.getSize() - 5) {
+        if (arrayOffset > content.length() - 5) {
             this.malformed = true;
             return;
         }
 
-        this.base = 1 << (int) content.get(content.getSize() - 1);
+        this.base = 1 << (int) content.charAt(content.length() - 1);
         this.data = data;
         this.arrayOffset = arrayOffset;
-        this.num = (content.getSize() - arrayOffset - 5) / Coding.FIXED_32_UNIT;
+        this.num = (content.length() - arrayOffset - 5) / Coding.FIXED_32_UNIT;
     }
 
-    public boolean keyMayMatch(long blockOffset, Slice key) {
+    public boolean keyMayMatch(long blockOffset, String key) {
         if (malformed) {
             return true; // Errors are treated as potential matches
         }
@@ -47,7 +46,7 @@ public class FilterBlockReader extends FilterBlockBase{
             int length = nextFilterOffset - filterOffset;
 
             if (filterOffset <= nextFilterOffset && nextFilterOffset <= arrayOffset) {
-                return filterPolicy.keyMayMatch(key, new Slice(data, length, filterOffset));
+                return filterPolicy.keyMayMatch(key, new String(data, filterOffset, length));
             } else if (filterOffset == nextFilterOffset) {
                 // Empty filters do not match any keys
                 return false;

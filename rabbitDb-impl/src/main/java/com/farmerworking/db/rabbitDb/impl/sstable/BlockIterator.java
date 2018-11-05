@@ -3,11 +3,10 @@ package com.farmerworking.db.rabbitDb.impl.sstable;
 import com.farmerworking.db.rabbitDb.api.DBComparator;
 import com.farmerworking.db.rabbitDb.api.DBIterator;
 import com.farmerworking.db.rabbitDb.impl.utils.Coding;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.api.Status;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class BlockIterator implements DBIterator<Slice, Slice> {
+public class BlockIterator implements DBIterator<String, String> {
 
     private DBComparator comparator;
     private char[] data;
@@ -19,7 +18,7 @@ public class BlockIterator implements DBIterator<Slice, Slice> {
     private int restartIndex;
 
     private Status status;
-    private Slice key;
+    private String key;
     private Pair<Integer, Integer> value; // offset + size;
 
     public BlockIterator(DBComparator comparator, char[] data, int restartOffset, int restartsCount) {
@@ -44,17 +43,17 @@ public class BlockIterator implements DBIterator<Slice, Slice> {
         return status.isOk() && current < restartOffset;
     }
 
-    public Slice key() {
+    public String key() {
         assert (isValid());
-        return new Slice(key);
+        return key;
     }
 
-    public Slice value() {
+    public String value() {
         assert (isValid());
 
         int offset = value.getLeft();
         int length = value.getRight();
-        return new Slice(data, length, offset);
+        return new String(data, offset, length);
     }
 
     public void next() {
@@ -98,7 +97,7 @@ public class BlockIterator implements DBIterator<Slice, Slice> {
     }
 
     @Override
-    public void seek(Slice target) {
+    public void seek(String target) {
         assert status.isOk();
         // Binary search in restart array to find the last restart point
         // with a key < target
@@ -123,7 +122,7 @@ public class BlockIterator implements DBIterator<Slice, Slice> {
             }
 
             String middleKey = new String(data, offset, nonShared);
-            if (this.comparator.compare(middleKey.toCharArray(), target.getData()) < 0) {
+            if (this.comparator.compare(middleKey, target) < 0) {
                 // Key at "mid" is smaller than "target".  Therefore all
                 // blocks before "mid" are uninteresting.
                 left = mid;
@@ -140,7 +139,7 @@ public class BlockIterator implements DBIterator<Slice, Slice> {
             if (!parseNextKey()) {
                 return;
             }
-            if (this.comparator.compare(key.getData(), target.getData()) >= 0) {
+            if (this.comparator.compare(key, target) >= 0) {
                 return;
             }
         }
@@ -151,7 +150,7 @@ public class BlockIterator implements DBIterator<Slice, Slice> {
         current = restartOffset;
         restartIndex = restartsCount;
         status = Status.corruption("bad entry in block");
-        key = new Slice();
+        key = null;
         value = null;
     }
 
@@ -178,12 +177,12 @@ public class BlockIterator implements DBIterator<Slice, Slice> {
         Integer nonShared = pair.getRight().getRight().getLeft();
         Integer valueLength = pair.getRight().getRight().getRight();
 
-        if (key.getSize() < shared) {
+        if (key.length() < shared) {
             corruptionError();
             return false;
         }
 
-        key.substring(0, shared).concat(data, offset, nonShared);
+        key =  key.substring(0, shared) + new String(data, offset, nonShared);
         value = Pair.of(offset + nonShared, valueLength);
         while (restartIndex + 1 < restartsCount && getRestartPoint(restartIndex + 1) < current) {
             ++restartIndex;
@@ -192,7 +191,7 @@ public class BlockIterator implements DBIterator<Slice, Slice> {
     }
 
     private void seekToRestartPoint(int restartIndex) {
-        key = new Slice();
+        key = "";
         this.restartIndex = restartIndex;
 
         int offset = getRestartPoint(restartIndex);

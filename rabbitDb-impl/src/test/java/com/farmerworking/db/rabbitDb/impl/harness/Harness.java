@@ -4,7 +4,6 @@ import com.farmerworking.db.rabbitDb.api.CompressionType;
 import com.farmerworking.db.rabbitDb.api.DBIterator;
 import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.harness.block.BlockConstructor;
 import com.farmerworking.db.rabbitDb.impl.harness.memtable.MemTableConstructor;
 import com.farmerworking.db.rabbitDb.impl.harness.db.DBConstructor;
@@ -80,12 +79,12 @@ class Harness {
     private void testGet(Vector<String> keys, ConcurrentSkipListMap<String, String> data, boolean verbose) {
         if (constructor.suppportGet()) {
             for(String key : keys) {
-                Slice value = constructor.get(new Slice(key));
+                String value = constructor.get(key);
                 assertNotNull(value);
                 assertEquals(toString(key, data.get(key)), toString(key, value.toString()));
             }
 
-            assertNull(constructor.get(new Slice("" + (char)2)));
+            assertNull(constructor.get("" + (char)2));
         }
     }
 
@@ -125,7 +124,7 @@ class Harness {
                         String key = pickRandomKey(random, keys);
                         if (verbose) System.out.println("Seek " + key + ", " + index);
 
-                        iter.seek(new Slice(key));
+                        iter.seek(key);
                         if (iter.isValid()) {
                             Map.Entry<String, String> entry = data.ceilingEntry(key);
                             index = keys.indexOf(entry.getKey());

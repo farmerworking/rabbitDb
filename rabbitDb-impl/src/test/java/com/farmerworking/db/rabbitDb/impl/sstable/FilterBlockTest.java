@@ -1,7 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl.sstable;
 
 import com.farmerworking.db.rabbitDb.api.FilterPolicy;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.utils.TestHashFilter;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,36 +19,36 @@ public class FilterBlockTest {
     @Test
     public void testEmptyBuilder() {
         FilterBlockBuilder builder = new FilterBlockBuilder(policy);
-        Slice block = builder.finish();
+        String block = builder.finish();
         assertEquals("\\x00\\x00\\x00\\x00\\x0b", escapeString(block));
 
         FilterBlockReader reader = new FilterBlockReader(policy, block);
-        assertTrue(reader.keyMayMatch(0, new Slice("foo")));
-        assertTrue(reader.keyMayMatch(100000, new Slice("foo")));
+        assertTrue(reader.keyMayMatch(0, "foo"));
+        assertTrue(reader.keyMayMatch(100000, "foo"));
     }
 
     @Test
     public void testSingleChunk() {
         FilterBlockBuilder builder = new FilterBlockBuilder(policy);
         builder.startBlock(100);
-        builder.addKey(new Slice("foo"));
-        builder.addKey(new Slice("bar"));
-        builder.addKey(new Slice("box"));
+        builder.addKey("foo");
+        builder.addKey("bar");
+        builder.addKey("box");
         builder.startBlock(200);
-        builder.addKey(new Slice("box"));
+        builder.addKey("box");
         builder.startBlock(300);
-        builder.addKey(new Slice("hello"));
-        Slice block = builder.finish();
+        builder.addKey("hello");
+        String block = builder.finish();
         FilterBlockReader reader = new FilterBlockReader(policy, block);
-        assertTrue(reader.keyMayMatch(100, new Slice("foo")));
-        assertTrue(reader.keyMayMatch(100, new Slice("bar")));
-        assertTrue(reader.keyMayMatch(100, new Slice("box")));
+        assertTrue(reader.keyMayMatch(100, "foo"));
+        assertTrue(reader.keyMayMatch(100, "bar"));
+        assertTrue(reader.keyMayMatch(100, "box"));
 
-        assertTrue(reader.keyMayMatch(100, new Slice("hello")));
-        assertTrue(reader.keyMayMatch(100, new Slice("foo")));
+        assertTrue(reader.keyMayMatch(100, "hello"));
+        assertTrue(reader.keyMayMatch(100, "foo"));
 
-        assertTrue(! reader.keyMayMatch(100, new Slice("missing")));
-        assertTrue(! reader.keyMayMatch(100, new Slice("other")));
+        assertTrue(! reader.keyMayMatch(100, "missing"));
+        assertTrue(! reader.keyMayMatch(100, "other"));
     }
 
     @Test
@@ -57,54 +56,54 @@ public class FilterBlockTest {
         FilterBlockBuilder builder = new FilterBlockBuilder(policy);
         // First filter
         builder.startBlock(0);
-        builder.addKey(new Slice("foo"));
+        builder.addKey("foo");
         builder.startBlock(2000);
-        builder.addKey(new Slice("bar"));
+        builder.addKey("bar");
 
         // Second filter
         builder.startBlock(3100);
-        builder.addKey(new Slice("box"));
+        builder.addKey("box");
 
         // Third filter is empty
 
         // Last filter
         builder.startBlock(9000);
-        builder.addKey(new Slice("box"));
-        builder.addKey(new Slice("hello"));
-        
-        Slice block = builder.finish();
+        builder.addKey("box");
+        builder.addKey("hello");
+
+        String block = builder.finish();
         FilterBlockReader reader = new FilterBlockReader(policy, block);
 
         // Check first filter
-        assertTrue(reader.keyMayMatch(0, new Slice("foo")));
-        assertTrue(reader.keyMayMatch(2000, new Slice("bar")));
-        assertTrue(! reader.keyMayMatch(0, new Slice("box")));
-        assertTrue(! reader.keyMayMatch(0, new Slice("hello")));
+        assertTrue(reader.keyMayMatch(0, "foo"));
+        assertTrue(reader.keyMayMatch(2000, "bar"));
+        assertTrue(! reader.keyMayMatch(0, "box"));
+        assertTrue(! reader.keyMayMatch(0, "hello"));
 
         // Check second filter
-        assertTrue(reader.keyMayMatch(3100, new Slice("box")));
-        assertTrue(! reader.keyMayMatch(3100, new Slice("foo")));
-        assertTrue(! reader.keyMayMatch(3100, new Slice("bar")));
-        assertTrue(! reader.keyMayMatch(3100, new Slice("hello")));
+        assertTrue(reader.keyMayMatch(3100, "box"));
+        assertTrue(! reader.keyMayMatch(3100, "foo"));
+        assertTrue(! reader.keyMayMatch(3100, "bar"));
+        assertTrue(! reader.keyMayMatch(3100, "hello"));
 
         // Check third filter (empty)
-        assertTrue(! reader.keyMayMatch(4100, new Slice("foo")));
-        assertTrue(! reader.keyMayMatch(4100, new Slice("bar")));
-        assertTrue(! reader.keyMayMatch(4100, new Slice("box")));
-        assertTrue(! reader.keyMayMatch(4100, new Slice("hello")));
+        assertTrue(! reader.keyMayMatch(4100, "foo"));
+        assertTrue(! reader.keyMayMatch(4100, "bar"));
+        assertTrue(! reader.keyMayMatch(4100, "box"));
+        assertTrue(! reader.keyMayMatch(4100, "hello"));
 
         // Check last filter
-        assertTrue(reader.keyMayMatch(9000, new Slice("box")));
-        assertTrue(reader.keyMayMatch(9000, new Slice("hello")));
-        assertTrue(! reader.keyMayMatch(9000, new Slice("foo")));
-        assertTrue(! reader.keyMayMatch(9000, new Slice("bar")));
+        assertTrue(reader.keyMayMatch(9000, "box"));
+        assertTrue(reader.keyMayMatch(9000, "hello"));
+        assertTrue(! reader.keyMayMatch(9000, "foo"));
+        assertTrue(! reader.keyMayMatch(9000, "bar"));
     }
 
-    private String escapeString(Slice value) {
+    private String escapeString(String value) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        for (int i = 0; i < value.getSize(); i++) {
-            char c = value.get(i);
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
 
             if (c >= ' ' && c <= '~') {
                 stringBuilder.append(c);

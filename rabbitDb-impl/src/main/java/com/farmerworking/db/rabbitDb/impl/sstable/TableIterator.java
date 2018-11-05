@@ -4,22 +4,19 @@ import com.farmerworking.db.rabbitDb.api.DBComparator;
 import com.farmerworking.db.rabbitDb.api.DBIterator;
 import com.farmerworking.db.rabbitDb.api.ReadOptions;
 import com.farmerworking.db.rabbitDb.api.Status;
-import com.farmerworking.db.rabbitDb.impl.ErrorIterator;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.file.RandomAccessFile;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 
-public class TableIterator extends TableReadBase implements DBIterator<Slice, Slice> {
-    private final DBIterator<Slice, Slice> indexIter;
+public class TableIterator extends TableReadBase implements DBIterator<String, String> {
+    private final DBIterator<String, String> indexIter;
     private final ReadOptions readOptions;
     private final RandomAccessFile file;
     private final DBComparator comparator;
-    private DBIterator<Slice, Slice> dataBlockIter;
+    private DBIterator<String, String> dataBlockIter;
     private Status status;
     private String dataBlockHandle;
 
-    public TableIterator(DBIterator<Slice, Slice> indexIter, ReadOptions readOptions, RandomAccessFile file, DBComparator comparator) {
+    public TableIterator(DBIterator<String, String> indexIter, ReadOptions readOptions, RandomAccessFile file, DBComparator comparator) {
         this.indexIter = indexIter;
         this.readOptions = readOptions;
         this.file = file;
@@ -93,7 +90,7 @@ public class TableIterator extends TableReadBase implements DBIterator<Slice, Sl
     }
 
     @Override
-    public void seek(Slice key) {
+    public void seek(String key) {
         indexIter.seek(key);
         initDataBlock();
         if (dataBlockIter != null) {
@@ -109,13 +106,13 @@ public class TableIterator extends TableReadBase implements DBIterator<Slice, Sl
     }
 
     @Override
-    public Slice key() {
+    public String key() {
         assert (isValid());
         return dataBlockIter.key();
     }
 
     @Override
-    public Slice value() {
+    public String value() {
         assert (isValid());
         return dataBlockIter.value();
     }
@@ -124,20 +121,20 @@ public class TableIterator extends TableReadBase implements DBIterator<Slice, Sl
         if (!indexIter.isValid()) {
             setDataBlockIter(null);
         } else {
-            Slice blockHandleContent = indexIter.value();
+            String blockHandleContent = indexIter.value();
 
-            if (dataBlockIter != null && StringUtils.equals(dataBlockHandle, blockHandleContent.toString())) {
+            if (dataBlockIter != null && StringUtils.equals(dataBlockHandle, blockHandleContent)) {
                 // dataBlockIter is already constructed with this iterator, so no need to change anything
                 return;
             }
 
-            DBIterator<Slice, Slice> iter = readDataBlock(file, readOptions, comparator, blockHandleContent);
-            dataBlockHandle = blockHandleContent.toString();
+            DBIterator<String, String> iter = readDataBlock(file, readOptions, comparator, blockHandleContent);
+            dataBlockHandle = blockHandleContent;
             setDataBlockIter(iter);
         }
     }
 
-    void setDataBlockIter(DBIterator<Slice, Slice> dataBlockIter) {
+    void setDataBlockIter(DBIterator<String, String> dataBlockIter) {
         if (this.dataBlockIter != null) {
             saveError(this.dataBlockIter.getStatus());
         }

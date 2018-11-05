@@ -1,7 +1,5 @@
 package com.farmerworking.db.rabbitDb.impl.utils;
 
-import com.farmerworking.db.rabbitDb.api.Slice;
-
 public class Hash {
     public static int hash(char[] data, int seed) {
         // Similar to murmur hash
@@ -36,7 +34,7 @@ public class Hash {
         return h;
     }
 
-    public static int bloomHash(Slice key) {
-        return hash(key.getData(), 0xbc9f1d34);
+    public static int bloomHash(String key) {
+        return hash(key.toCharArray(), 0xbc9f1d34);
     }
 }

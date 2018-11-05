@@ -2,14 +2,13 @@ package com.farmerworking.db.rabbitDb.impl;
 
 import com.farmerworking.db.rabbitDb.api.DBComparator;
 import com.farmerworking.db.rabbitDb.api.DBIterator;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.api.Status;
 import com.farmerworking.db.rabbitDb.impl.memtable.InternalKey;
 import com.farmerworking.db.rabbitDb.impl.memtable.MemtableIterator;
 import com.farmerworking.db.rabbitDb.impl.memtable.ValueType;
 
 
-public class DBIteratorImpl implements DBIterator<Slice, Slice> {
+public class DBIteratorImpl implements DBIterator<String, String> {
 
     private final MemtableIterator memtableIterator;
     private final long sequence;
@@ -22,11 +21,11 @@ public class DBIteratorImpl implements DBIterator<Slice, Slice> {
         this.comparator = comparator;
     }
 
-    public Slice key() {
+    public String key() {
         return memtableIterator.key().getUserKey();
     }
 
-    public Slice value() {
+    public String value() {
         return memtableIterator.value();
     }
 
@@ -39,7 +38,7 @@ public class DBIteratorImpl implements DBIterator<Slice, Slice> {
         nextValidUserKey(null);
     }
 
-    public void seek(Slice key) {
+    public void seek(String key) {
         memtableIterator.seek(new InternalKey(key, sequence, null));
         nextValidUserKey(null);
     }
@@ -71,7 +70,7 @@ public class DBIteratorImpl implements DBIterator<Slice, Slice> {
                 // skip new record since this iterator creation
                 memtableIterator.prev();
             } else if (currentKey == null ||
-                    comparator.compare(currentKey.getUserKey().getData(), internalKey.getUserKey().getData())
+                    comparator.compare(currentKey.getUserKey().toCharArray(), internalKey.getUserKey().toCharArray())
                             == 0) {
                 currentKey = internalKey;
                 memtableIterator.prev();
@@ -87,7 +86,7 @@ public class DBIteratorImpl implements DBIterator<Slice, Slice> {
         }
     }
 
-    private void nextValidUserKey(Slice deletedKey) {
+    private void nextValidUserKey(String deletedKey) {
         while (memtableIterator.isValid()) {
             InternalKey internalKey = memtableIterator.key();
 
@@ -98,7 +97,7 @@ public class DBIteratorImpl implements DBIterator<Slice, Slice> {
                 deletedKey = internalKey.getUserKey();
                 memtableIterator.next();
             } else if (deletedKey != null
-                    && comparator.compare(deletedKey.getData(), internalKey.getUserKey().getData()) == 0) {
+                    && comparator.compare(deletedKey, internalKey.getUserKey()) == 0) {
                 memtableIterator.next();
             } else {
                 break;

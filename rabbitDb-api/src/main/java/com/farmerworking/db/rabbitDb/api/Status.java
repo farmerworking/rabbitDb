@@ -22,12 +22,12 @@ public class Status {
 
     private Status(Code code, String msg1, String msg2) {
         this.code = code.value;
-        this.message = msg1.toString() + ": " + msg2.toString();
+        this.message = msg1 + ": " + msg2;
     }
 
     private Status(Code code, String msg) {
         this.code = code.value;
-        this.message = msg.toString();
+        this.message = msg;
     }
 
     public static Status ok() {

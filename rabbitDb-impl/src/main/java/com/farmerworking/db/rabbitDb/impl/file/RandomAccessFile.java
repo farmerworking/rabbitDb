@@ -1,6 +1,5 @@
 package com.farmerworking.db.rabbitDb.impl.file;
 
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.api.Status;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -13,5 +12,5 @@ public interface RandomAccessFile {
     // If an error was encountered, returns a non-OK status.
     //
     // Safe for concurrent use by multiple threads.
-    Pair<Status, Slice> read(long offset, long n);
+    Pair<Status, String> read(long offset, long n);
 }

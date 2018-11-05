@@ -1,7 +1,6 @@
 package com.farmerworking.db.rabbitDb.impl.memtable;
 
 import com.farmerworking.db.rabbitDb.api.DBComparator;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.skiplist.SkipList;
 import com.farmerworking.db.rabbitDb.impl.skiplist.SkipListIterator;
 
@@ -22,12 +21,12 @@ public class Memtable {
         return new MemtableIterator(table.iterator());
     }
 
-    public void add(InternalKey internalKey, Slice value) {
+    public void add(InternalKey internalKey, String value) {
         InternalEntry internalEntry = new InternalEntry(internalKey, value);
         table.insert(internalEntry);
     }
 
-    public Slice get(InternalKey internalKey) {
+    public String get(InternalKey internalKey) {
         InternalEntry seekEntry = new InternalEntry(internalKey, null /* no need*/);
         SkipListIterator<InternalEntry> iterator = table.iterator();
         iterator.seek(seekEntry);
@@ -35,7 +34,7 @@ public class Memtable {
             InternalEntry entry = iterator.key();
 
             if (this.internalEntryComparator.getUserComparator()
-                    .compare(entry.getInternalKey().getUserKey().getData(), internalKey.getUserKey().getData()) == 0) {
+                    .compare(entry.getInternalKey().getUserKey().toCharArray(), internalKey.getUserKey().toCharArray()) == 0) {
                 if (entry.getInternalKey().getValueType() == ValueType.DELETE) {
                     return null;
                 } else {

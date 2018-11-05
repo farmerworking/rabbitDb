@@ -4,7 +4,6 @@ import com.farmerworking.db.rabbitDb.api.DBIterator;
 import com.farmerworking.db.rabbitDb.api.Options;
 import com.farmerworking.db.rabbitDb.api.ReadOptions;
 import com.farmerworking.db.rabbitDb.api.Status;
-import com.farmerworking.db.rabbitDb.api.Slice;
 import com.farmerworking.db.rabbitDb.impl.ByteWiseComparator;
 import com.farmerworking.db.rabbitDb.impl.file.RandomAccessFile;
 import com.farmerworking.db.rabbitDb.impl.utils.SnappyWrapper;
@@ -29,7 +28,7 @@ public class Table extends TableReadBase {
             return Pair.of(status, null);
         }
 
-        Pair<Status, Slice> pair = file.read(size - Footer.ENCODE_LENGTH, Footer.ENCODE_LENGTH);
+        Pair<Status, String> pair = file.read(size - Footer.ENCODE_LENGTH, Footer.ENCODE_LENGTH);
         status = pair.getLeft();
 
         if (status.isNotOk()) return Pair.of(status, null);
@@ -55,16 +54,16 @@ public class Table extends TableReadBase {
     }
 
     public TableIterator iterator(ReadOptions readOptions) {
-        DBIterator<Slice, Slice> iter = this.indexBlock.iterator(this.options.comparator());
+        DBIterator<String, String> iter = this.indexBlock.iterator(this.options.comparator());
         return new TableIterator(iter, readOptions, file, this.options.comparator());
     }
 
-    public Pair<Status, Slice> get(ReadOptions readOptions, Slice key) {
-        DBIterator<Slice, Slice> iter = this.indexBlock.iterator(this.options.comparator());
+    public Pair<Status, String> get(ReadOptions readOptions, String key) {
+        DBIterator<String, String> iter = this.indexBlock.iterator(this.options.comparator());
         iter.seek(key);
 
         if (iter.isValid()) {
-            Slice blockHandleContent = iter.value();
+            String blockHandleContent = iter.value();
             BlockHandle blockHandle = new BlockHandle();
             Pair<Status, Integer> pair = blockHandle.decodeFrom(blockHandleContent);
 
@@ -78,7 +77,7 @@ public class Table extends TableReadBase {
                         return Pair.of(Status.ok(), null);
                     }
                 }
-                DBIterator<Slice, Slice> blockIter = readDataBlock(file, readOptions, this.options.comparator(), blockHandle);
+                DBIterator<String, String> blockIter = readDataBlock(file, readOptions, this.options.comparator(), blockHandle);
                 blockIter.seek(key);
 
                 if (blockIter.isValid() && blockIter.key().equals(key)) {
@@ -111,15 +110,15 @@ public class Table extends TableReadBase {
         }
 
         Block metaIndexBlock = pair.getRight();
-        DBIterator<Slice, Slice> iter = metaIndexBlock.iterator(ByteWiseComparator.getInstance());
-        Slice key = new Slice("filter." + this.options.filterPolicy().name());
+        DBIterator<String, String> iter = metaIndexBlock.iterator(ByteWiseComparator.getInstance());
+        String key = "filter." + this.options.filterPolicy().name();
         iter.seek(key);
         if (iter.isValid() && iter.key().equals(key)) {
             readFilter(iter.value());
         }
     }
 
-    void readFilter(Slice value) {
+    void readFilter(String value) {
         BlockHandle filterBlockHandle = new BlockHandle();
         Pair<Status, Integer> pair = filterBlockHandle.decodeFrom(value);
         if (pair.getLeft().isNotOk()) {
