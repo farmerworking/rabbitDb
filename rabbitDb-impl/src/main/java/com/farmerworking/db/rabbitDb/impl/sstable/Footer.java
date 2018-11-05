@@ -16,13 +16,13 @@ public class Footer {
     private BlockHandle metaIndexHandle;
     private BlockHandle indexHandle;
 
-    public void encodeTo(StringBuilder stringBuilder) {
-        int originLength = stringBuilder.length();
-        metaIndexHandle.encodeTo(stringBuilder);
-        indexHandle.encodeTo(stringBuilder);
+    public String encode() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(metaIndexHandle.encode());
+        stringBuilder.append(indexHandle.encode());
 
         // Padding
-        int remain = 2 * BlockHandle.MAX_ENCODED_LENGTH - stringBuilder.length() + originLength;
+        int remain = 2 * BlockHandle.MAX_ENCODED_LENGTH - stringBuilder.length();
         if (remain > 0) {
             char[] buffer = new char[remain];
             Arrays.fill(buffer, (char)0);
@@ -32,7 +32,8 @@ public class Footer {
         Coding.putFixed32(stringBuilder, MAGIC_NUMBER.and(new BigInteger("4294967295")).intValue());
         Coding.putFixed32(stringBuilder, MAGIC_NUMBER.shiftRight(32).intValue());
 
-        assert stringBuilder.length() == originLength + ENCODE_LENGTH;
+        assert stringBuilder.length() ==  ENCODE_LENGTH;
+        return stringBuilder.toString();
     }
 
     public Status decodeFrom(String slice) {

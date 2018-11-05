@@ -43,13 +43,13 @@ public class TableTest {
     @Test
     public void testOpenMalformedFooter() throws Exception {
         Footer footer = new Footer();
-        StringBuilder builder = new StringBuilder();
         footer.setIndexHandle(new BlockHandle(0, 0));
         footer.setMetaIndexHandle(new BlockHandle(0, 0));
-        footer.encodeTo(builder);
-        int index = builder.length() - 1;
+        String encode = footer.encode();
+        int index = encode.length() - 1;
+        StringBuilder builder = new StringBuilder(encode);
         builder.setCharAt(
-                index, (char)(builder.charAt(index) + 1)
+                index, (char) (builder.charAt(index) + 1)
         );
         file = new StringSource(builder.toString());
 
@@ -147,10 +147,9 @@ public class TableTest {
 
         Table table = pair.getRight();
         table.setFile(new ErrorRandomAccessFile());
-        StringBuilder s = new StringBuilder();
         BlockHandle blockHandle = new BlockHandle(100, 100);
-        blockHandle.encodeTo(s);
-        table.readFilter(s.toString());
+        String encode = blockHandle.encode();
+        table.readFilter(encode);
 
         assertNull(pair.getRight().filter);
     }

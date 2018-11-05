@@ -19,9 +19,11 @@ public class BlockHandle {
         this.size = size;
     }
 
-    public void encodeTo(StringBuilder stringBuilder) {
-        Coding.putVariant64(stringBuilder, offset);
-        Coding.putVariant64(stringBuilder, size);
+    public String encode() {
+        StringBuilder builder = new StringBuilder();
+        Coding.putVariant64(builder, offset);
+        Coding.putVariant64(builder, size);
+        return builder.toString();
     }
 
     public Pair<Status, Integer> decodeFrom(String slice) {

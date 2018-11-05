@@ -15,14 +15,13 @@ public class BlockHandleTest {
     public void testSimple() throws Exception {
         BlockHandle blockHandle = new BlockHandle(111l, 100l);
 
-        StringBuilder stringBuilder = new StringBuilder();
-        blockHandle.encodeTo(stringBuilder);
+        String encode = blockHandle.encode();
 
         BlockHandle another = new BlockHandle();
         assertEquals(another.getOffset(), 0l);
         assertEquals(another.getSize(), 0l);
 
-        Pair<Status, Integer> pair = another.decodeFrom(stringBuilder.toString());
+        Pair<Status, Integer> pair = another.decodeFrom(encode);
         assertTrue(pair.getLeft().isOk());
         assertEquals(another.getOffset(), 111l);
         assertEquals(another.getSize(), 100l);

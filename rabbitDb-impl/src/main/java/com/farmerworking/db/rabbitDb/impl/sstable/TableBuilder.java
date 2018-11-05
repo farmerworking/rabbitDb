@@ -109,9 +109,8 @@ public class TableBuilder {
         if (this.status.isOk()) {
             BlockBuilder metaIndexBuilder = new BlockBuilder(this.options.blockRestartInterval(), this.options.comparator());
             if (this.filterBlockBuilder != null) {
-                StringBuilder s = new StringBuilder();
-                filterBlockHandle.encodeTo(s);
-                metaIndexBuilder.add("filter." + this.options.filterPolicy().name(), s.toString());
+                String encode = filterBlockHandle.encode();
+                metaIndexBuilder.add("filter." + this.options.filterPolicy().name(), encode);
             }
 
             writeBlock(metaIndexBuilder, metaIndexHandle);
@@ -129,13 +128,11 @@ public class TableBuilder {
             footer.setIndexHandle(indexHandle);
             footer.setMetaIndexHandle(metaIndexHandle);
 
-            StringBuilder builder = new StringBuilder();
-            footer.encodeTo(builder);
+            String encode = footer.encode();
 
-            String footerContent = builder.toString();
-            this.status = file.append(footerContent);
+            this.status = file.append(encode);
             if (status.isOk()) {
-                fileOffset += footerContent.length();
+                fileOffset += encode.length();
             }
         }
 
@@ -195,10 +192,9 @@ public class TableBuilder {
             indexKey = this.options.comparator().findShortestSeparator(lastKey, key);
         }
 
-        StringBuilder builder = new StringBuilder();
-        pendingBlockHandle.encodeTo(builder);
+        String encode = pendingBlockHandle.encode();
 
-        indexBlockBuilder.add(indexKey, builder.toString());
+        indexBlockBuilder.add(indexKey, encode);
         pendingIndexEntry = false;
     }
 

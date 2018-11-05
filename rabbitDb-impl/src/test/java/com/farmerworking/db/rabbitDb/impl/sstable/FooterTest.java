@@ -16,14 +16,13 @@ public class FooterTest {
         footer.setIndexHandle(new BlockHandle(123l, 165465464l));
         footer.setMetaIndexHandle(new BlockHandle(46464954l, 456l));
 
-        StringBuilder stringBuilder = new StringBuilder();
-        footer.encodeTo(stringBuilder);
+        String encode = footer.encode();
 
         Footer another = new Footer();
         assertNull(another.getIndexHandle());
         assertNull(another.getMetaIndexHandle());
 
-        Status status = another.decodeFrom(stringBuilder.toString());
+        Status status = another.decodeFrom(encode);
         assertTrue(status.isOk());
         assertEquals(another.getIndexHandle().getOffset(), 123l);
         assertEquals(another.getIndexHandle().getSize(), 165465464l);
