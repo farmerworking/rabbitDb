@@ -1,6 +1,7 @@
 package com.farmerworking.db.rabbitDb.impl;
 
 import com.farmerworking.db.rabbitDb.api.*;
+import com.farmerworking.db.rabbitDb.impl.generator.SequenceGenerator;
 import com.farmerworking.db.rabbitDb.impl.memtable.InternalKey;
 import com.farmerworking.db.rabbitDb.impl.memtable.Memtable;
 import com.farmerworking.db.rabbitDb.impl.writebatch.WriteBatchImpl;

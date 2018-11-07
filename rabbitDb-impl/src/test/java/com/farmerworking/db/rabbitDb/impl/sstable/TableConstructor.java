@@ -1,8 +1,8 @@
 package com.farmerworking.db.rabbitDb.impl.sstable;
 
 import com.farmerworking.db.rabbitDb.api.*;
-import com.farmerworking.db.rabbitDb.impl.SequenceGenerator;
 import com.farmerworking.db.rabbitDb.impl.SnapshotImpl;
+import com.farmerworking.db.rabbitDb.impl.generator.SequenceGenerator;
 import com.farmerworking.db.rabbitDb.impl.harness.Constructor;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSink;
 import com.farmerworking.db.rabbitDb.impl.utils.StringSource;
