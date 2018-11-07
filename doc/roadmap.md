@@ -53,22 +53,31 @@ More details:
 
 design issues:
 
-1. encoding compatible —— hash, crc, fix length, variant length
+1. encoding compatible —— hash, crc32c, fix length, variant length
 2. compression —— snappy, common prefix of key compression
-3. error detection —— CRC, file mark with magic number
-4. index
-5. filter —— bloom filter
+3. error detection —— crc32c, file footer mark with magic number
+4. performance —— between files using file index, between blocks using block index, within single block using filter first, binary search second
 
 implementation steps:
 
 1. encoding
-2. block —— snappy compression, CRC
-3. sstable —— data block —— common prefix of key compression
-4. sstable —— index block
-5. sstable —— meta index block
-6. sstable —— meta block —— bloom filter
-7. sstable —— footer —— file mark with magic number
-8. sstable
+2. crc32c
+3. snappy compression
+4. status
+5. data block builder/reader —— common prefix of key compression
+6. filter data block builder/reader
+7. bloom filter implementation
+8. sstable footer
+9. basic table builder —— data block + index block
+10. add crc32c checksum to block for data integrity
+11. support block compression
+12. support filter meta block
+13. global file number generator
+14. file meta and L0 file manager
+15. env interface and implementation
+16. file name util
+17. block and do memory table compaction
+18. introduce immutable memory table and async memory table compaction. only block when last compaction not finished
 
 ### Phase 3 --- persistent
 
