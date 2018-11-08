@@ -5,7 +5,7 @@ import lombok.Getter;
 
 import java.util.Comparator;
 
-class InternalEntryComparator implements Comparator<InternalEntry> {
+public class InternalEntryComparator implements Comparator<InternalEntry> {
 
     private
     @Getter
@@ -16,12 +16,14 @@ class InternalEntryComparator implements Comparator<InternalEntry> {
     }
 
     public int compare(InternalEntry o1, InternalEntry o2) {
-        int compareResult = userComparator
-                .compare(o1.getInternalKey().getUserKey(),
-                        o2.getInternalKey().getUserKey());
+        return compare(o1.getInternalKey(), o2.getInternalKey());
+    }
+
+    public int compare(InternalKey o1, InternalKey o2) {
+        int compareResult = userComparator.compare(o1.getUserKey(), o2.getUserKey());
 
         if (compareResult == 0) {
-            return Long.compare(o2.getInternalKey().getSequence(), o1.getInternalKey().getSequence());
+            return Long.compare(o2.getSequence(), o1.getSequence());
         } else {
             return compareResult;
         }
