@@ -12,5 +12,5 @@ public interface RandomAccessFile {
     // If an error was encountered, returns a non-OK status.
     //
     // Safe for concurrent use by multiple threads.
-    Pair<Status, String> read(long offset, long n);
+    Pair<Status, String> read(int offset, int n);
 }

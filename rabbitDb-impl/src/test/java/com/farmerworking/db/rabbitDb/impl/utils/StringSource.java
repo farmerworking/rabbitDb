@@ -12,9 +12,9 @@ public class StringSource implements RandomAccessFile {
     }
 
     @Override
-    public Pair<Status, String> read(long offset, long size) {
-        char[] dst = new char[(int) size];
-        content.getChars((int)offset, (int)(offset + size), dst, 0);
+    public Pair<Status, String> read(int offset, int size) {
+        char[] dst = new char[size];
+        content.getChars(offset, offset + size, dst, 0);
         return Pair.of(Status.ok(), new String(dst));
     }
 }

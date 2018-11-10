@@ -9,12 +9,12 @@ import org.apache.commons.lang3.tuple.Pair;
 public class BlockHandle {
     public static int MAX_ENCODED_LENGTH = 2 * Coding.MAX_VARY_64_UNIT;
 
-    private long offset;
-    private long size;
+    private int offset;
+    private int size;
 
     public BlockHandle() {}
 
-    public BlockHandle(long offset, long size) {
+    public BlockHandle(int offset, int size) {
         this.offset = offset;
         this.size = size;
     }
@@ -32,12 +32,12 @@ public class BlockHandle {
         if (pair == null) {
             return Pair.of(Status.corruption("bad block handle"), 0);
         } else {
-            this.offset = pair.getRight();
+            this.offset = pair.getRight().intValue();
             pair = Coding.decodeVariant64(data, pair.getLeft());
             if (pair == null) {
                 return Pair.of(Status.corruption("bad block handle"), 0);
             } else {
-                this.size = pair.getRight();
+                this.size = pair.getRight().intValue();
                 return Pair.of(Status.ok(), pair.getLeft());
             }
         }

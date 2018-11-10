@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 public class BlockHandleTest {
     @Test
     public void testSimple() throws Exception {
-        BlockHandle blockHandle = new BlockHandle(111l, 100l);
+        BlockHandle blockHandle = new BlockHandle(111, 100);
 
         String encode = blockHandle.encode();
 

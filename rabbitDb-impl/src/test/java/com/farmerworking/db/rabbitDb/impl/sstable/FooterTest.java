@@ -13,8 +13,8 @@ public class FooterTest {
     public void testSimple() throws Exception {
         Footer footer = new Footer();
 
-        footer.setIndexHandle(new BlockHandle(123l, 165465464l));
-        footer.setMetaIndexHandle(new BlockHandle(46464954l, 456l));
+        footer.setIndexHandle(new BlockHandle(123, 165465464));
+        footer.setMetaIndexHandle(new BlockHandle(46464954, 456));
 
         String encode = footer.encode();
 
